@@ -1,0 +1,170 @@
+// Services section styles - variables injected by Vite
+
+.section {
+  padding: $spacing-3xl 0;
+  background-color: $color-card;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
+  
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+}
+
+.header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto $spacing-3xl;
+}
+
+.label {
+  color: $color-secondary;
+  letter-spacing: $letter-spacing-widest;
+  text-transform: uppercase;
+  font-size: $font-size-sm;
+  font-family: $font-primary;
+  display: block;
+  margin-bottom: $margin-md;
+}
+
+.title {
+  @include section-heading;
+  margin: 0 0 $margin-lg 0;
+  color: $color-foreground;
+}
+
+.description {
+  color: $color-text-muted;
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.servicesGrid {
+  @include grid-layout(1, $gap-lg);
+
+  @include min-width(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include min-width(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.serviceCard {
+  background-color: $color-background;
+  border: 1px solid $color-border;
+  overflow: hidden;
+  @include transition-smooth(all, $transition-duration-slow);
+
+  &:hover {
+    border-color: rgba($color-secondary, 0.5);
+
+    .serviceImage {
+      &::before {
+        background: linear-gradient(
+          to bottom,
+          rgba($color-primary, 0.4),
+          rgba($color-primary, 0.6)
+        );
+      }
+    }
+
+    .serviceImage img {
+      transform: scale(1.1);
+    }
+  }
+}
+
+.serviceImage {
+  position: relative;
+  height: 256px;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba($color-primary, 0.6),
+      rgba($color-primary, 0.4),
+      rgba($color-primary, 0.8)
+    );
+    @include transition-smooth(all, $transition-duration-slow);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    @include transition-smooth(transform, $transition-duration-slow);
+  }
+
+  .serviceIcon {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    width: 40px;
+    height: 40px;
+    color: $color-secondary;
+    stroke-width: 1.5px;
+  }
+}
+
+.serviceContent {
+  padding: $padding-2xl;
+  display: flex;
+  flex-direction: column;
+  gap: $gap-md;
+}
+
+.serviceTitle {
+  @include heading-style($font-size-2xl, $font-weight-medium, $line-height-tight);
+  color: $color-foreground;
+  margin: 0;
+  @include transition-smooth(color, $transition-duration-normal);
+
+  .serviceCard:hover & {
+    color: $color-secondary;
+  }
+}
+
+.serviceDescription {
+  color: $color-text-muted;
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.serviceLink {
+  font-size: $font-size-sm;
+  color: $color-secondary;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include flex-center-v;
+  gap: $gap-sm;
+  @include transition-fast;
+  font-family: $font-primary;
+  padding: 0;
+
+  &:hover {
+    gap: $gap-lg;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    @include transition-smooth(transform);
+  }
+
+  &:hover svg {
+    transform: translateX(4px);
+  }
+}

@@ -1,0 +1,200 @@
+// Contact section styles - variables injected by Vite
+
+.section {
+  padding: $spacing-3xl 0;
+  background-color: $color-background;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
+  
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+}
+
+.header {
+  text-align: center;
+  max-width: 768px;
+  margin: 0 auto $spacing-3xl;
+}
+
+.label {
+  color: $color-secondary;
+  letter-spacing: $letter-spacing-widest;
+  text-transform: uppercase;
+  font-size: $font-size-sm;
+  font-family: $font-primary;
+  display: block;
+  margin-bottom: $margin-md;
+}
+
+.title {
+  @include section-heading;
+  margin: 0 0 $margin-lg 0;
+}
+
+.description {
+  color: $color-text-muted;
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.grid {
+  @include grid-layout(1, $gap-3xl);
+
+  @include min-width(lg) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+// Contact Form Section
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-2xl;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-sm;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-foreground;
+  font-family: $font-primary;
+}
+
+.input,
+.textarea,
+.select {
+  padding: $padding-md $padding-lg;
+  border: 1px solid $color-border;
+  background-color: transparent;
+  font-family: $font-primary;
+  font-size: $font-size-base;
+  color: $color-foreground;
+  @include transition-smooth(border-color, $transition-duration-normal);
+
+  &:focus {
+    outline: none;
+    border-color: $color-secondary;
+  }
+
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 150px;
+}
+
+.submitButton {
+  padding: $padding-lg $padding-2xl;
+  background-color: $color-secondary;
+  color: $color-primary;
+  border: none;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  letter-spacing: $letter-spacing-wider;
+  font-family: $font-primary;
+  @include transition-smooth(all, $transition-duration-normal);
+
+  &:hover {
+    background-color: $color-accent-hover;
+    box-shadow: $shadow-lg-gold;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Contact Information Section
+.infoSection {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-3xl;
+}
+
+.infoCard {
+  display: flex;
+  gap: $gap-lg;
+}
+
+.infoIcon {
+  width: 24px;
+  height: 24px;
+  color: $color-secondary;
+  flex-shrink: 0;
+  margin-top: $margin-sm;
+  stroke-width: 1.5px;
+}
+
+.infoContent {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-sm;
+}
+
+.infoTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-foreground;
+  font-family: $font-primary;
+  margin: 0;
+}
+
+.infoText {
+  color: $color-text-muted;
+  line-height: $line-height-relaxed;
+  margin: 0;
+  font-family: $font-primary;
+}
+
+.infoLink {
+  color: $color-secondary;
+  text-decoration: none;
+  @include transition-smooth(color);
+
+  &:hover {
+    color: $color-accent-hover;
+  }
+}
+
+.socialLinks {
+  display: flex;
+  gap: $gap-md;
+  margin-top: $margin-lg;
+}
+
+.socialLink {
+  width: 40px;
+  height: 40px;
+  border: 1px solid $color-secondary;
+  background: none;
+  cursor: pointer;
+  @include flex-center;
+  color: $color-secondary;
+  @include transition-smooth(all, $transition-duration-normal);
+
+  &:hover {
+    background-color: $color-secondary;
+    color: $color-primary;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5px;
+  }
+}

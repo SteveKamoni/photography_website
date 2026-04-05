@@ -1,0 +1,93 @@
+// Gallery section styles - variables injected by Vite
+
+.section {
+  padding: $spacing-3xl 0;
+  background-color: $color-card;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
+  
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+}
+
+.header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto $spacing-3xl;
+}
+
+.label {
+  color: $color-secondary;
+  letter-spacing: $letter-spacing-widest;
+  text-transform: uppercase;
+  font-size: $font-size-sm;
+  font-family: $font-primary;
+  display: block;
+  margin-bottom: $margin-md;
+}
+
+.title {
+  @include section-heading;
+  margin: 0 0 $margin-lg 0;
+}
+
+.description {
+  color: $color-text-muted;
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $gap-lg;
+  
+  @include min-width(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(mobile) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $gap-md;
+  }
+}
+
+.galleryItem {
+  position: relative;
+  overflow: hidden;
+  background-color: $color-primary;
+  @include transition-smooth(all, $transition-duration-slow);
+  
+  &.tall {
+    grid-row: span 2;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    @include transition-smooth(transform, $transition-duration-slow);
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba($color-primary, 0);
+    @include transition-smooth(background, $transition-duration-normal);
+  }
+
+  &:hover::after {
+    background: rgba($color-primary, 0.2);
+  }
+}

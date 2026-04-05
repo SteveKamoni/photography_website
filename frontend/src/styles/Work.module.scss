@@ -1,0 +1,208 @@
+// Work/Portfolio section styles - variables injected by Vite
+
+.section {
+  padding: $spacing-3xl 0;
+  background-color: $color-background;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
+  
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+}
+
+.header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto $spacing-3xl;
+}
+
+.label {
+  color: $color-secondary;
+  letter-spacing: $letter-spacing-widest;
+  text-transform: uppercase;
+  font-size: $font-size-sm;
+  font-family: $font-primary;
+  display: block;
+  margin-bottom: $margin-md;
+}
+
+.title {
+  @include section-heading;
+  margin: 0 0 $margin-lg 0;
+}
+
+.description {
+  color: $color-text-muted;
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.portfolioGrid {
+  @include grid-layout(1, $gap-lg);
+  margin-bottom: $margin-3xl;
+
+  @include min-width(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include min-width(lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.portfolioItem {
+  position: relative;
+  overflow: hidden;
+  background-color: $color-primary;
+  aspect-ratio: 4/5;
+  cursor: pointer;
+  @include parallax;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    @include transition-smooth(transform, $transition-duration-slow);
+  }
+
+  &:hover img {
+    transform: scale(1.1);
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba($color-primary, 0.8),
+    rgba($color-primary, 0.6),
+    rgba($color-primary, 0.9)
+  );
+  @include transition-smooth(opacity, $transition-duration-normal);
+  opacity: 0;
+
+  .portfolioItem:hover & {
+    opacity: 1;
+  }
+}
+
+.overlayContent {
+  position: absolute;
+  inset: 0;
+  @include flex-column;
+  justify-content: flex-end;
+  padding: $padding-2xl;
+  display: flex;
+  flex-direction: column;
+}
+
+.overlayText {
+  transform: translateY(16px);
+  opacity: 0;
+  @include transition-smooth(all, $transition-duration-normal);
+
+  .portfolioItem:hover & {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.portfolioCategory {
+  color: $color-secondary;
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  margin-bottom: $margin-sm;
+  font-family: $font-primary;
+  font-weight: $font-weight-medium;
+}
+
+.portfolioTitle {
+  @include heading-style($font-size-3xl, $font-weight-medium, $line-height-tight);
+  color: white;
+  margin: 0 0 $margin-md 0;
+}
+
+.portfolioDescription {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+  margin-bottom: $margin-md;
+}
+
+.portfolioLink {
+  color: $color-secondary;
+  @include flex-center-v;
+  gap: $gap-sm;
+  text-decoration: none;
+  font-size: $font-size-sm;
+  background: none;
+  border: none;
+  cursor: pointer;
+  @include transition-fast;
+  font-family: $font-primary;
+
+  &:hover {
+    gap: $gap-md;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.borderAccent {
+  position: absolute;
+  inset: 0;
+  border: 2px solid $color-secondary;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.95);
+  @include transition-smooth(all, $transition-duration-normal);
+
+  .portfolioItem:hover & {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.viewAllButton {
+  text-align: center;
+}
+
+.buttonWrapper {
+  @include flex-center;
+  gap: $gap-md;
+  padding: $padding-lg $padding-2xl;
+  border: 2px solid $color-primary;
+  background: none;
+  cursor: pointer;
+  @include transition-smooth(all, $transition-duration-normal);
+  font-family: $font-primary;
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-wider;
+  color: $color-primary;
+
+  &:hover {
+    background-color: $color-primary;
+    color: $color-secondary;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    @include transition-smooth(transform);
+  }
+
+  &:hover svg {
+    transform: translateX(4px);
+  }
+}

@@ -1,0 +1,576 @@
+// ============================================================================
+// GLOBAL VARIABLES & MIXINS FOR PHOTOGRAPHY WEBSITE
+// ============================================================================
+
+// =============================================================================
+// COLOR VARIABLES
+// =============================================================================
+// Luxury Photography Color Palette
+
+// Primary colors
+$color-primary: #1a1a1a; // Deep charcoal
+$color-primary-light: #f8f6f3; // Cream/soft white
+
+// Secondary & Accent
+$color-secondary: #d4af37; // Warm gold
+$color-accent: #d4af37; // Gold accent
+$color-accent-hover: #c9a961; // Darker gold
+
+// Backgrounds & Surfaces
+$color-background: #f8f6f3; // Cream/soft white
+$color-background-dark: #1a1a1a; // Deep charcoal
+$color-card: #ffffff; // Pure white
+$color-popover: #ffffff; // Pure white
+
+// Text colors
+$color-foreground: #1a1a1a; // Deep charcoal
+$color-foreground-light: #f8f6f3; // Cream
+$color-text-muted: #6b6b6b; // Medium gray
+$color-text-subtle: #e8e6e1; // Light gray
+
+// Depth colors
+$color-burgundy: #6b1c23; // Deep burgundy for depth
+$color-navy: #1c2541; // Deep navy for depth
+
+// Borders & Inputs
+$color-border: rgba(26, 26, 26, 0.1);
+$color-input: transparent;
+$color-input-background: #ffffff;
+
+// Utility colors
+$color-destructive: #d4183d;
+$color-destructive-foreground: #ffffff;
+$color-muted: #e8e6e1;
+$color-muted-foreground: #6b6b6b;
+$color-switch-background: #cbced4;
+
+// Chart colors
+$color-chart-1: oklch(0.646 0.222 41.116);
+$color-chart-2: oklch(0.6 0.118 184.704);
+$color-chart-3: oklch(0.398 0.07 227.392);
+$color-chart-4: oklch(0.828 0.189 84.429);
+$color-chart-5: oklch(0.769 0.188 70.08);
+
+// Ring/focus colors
+$color-ring: rgba(212, 175, 55, 0.5);
+
+// =============================================================================
+// TYPOGRAPHY VARIABLES
+// =============================================================================
+
+// Font families
+$font-primary: 'Inter', sans-serif;
+$font-secondary: 'Cormorant Garamond', serif;
+
+// Font sizes
+$font-size-base: 16px;
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-size-2xl: 24px;
+$font-size-3xl: 30px;
+$font-size-4xl: 36px;
+$font-size-5xl: 48px;
+$font-size-6xl: 60px;
+$font-size-7xl: 72px;
+$font-size-8xl: 96px;
+
+// Font weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Line heights
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+$line-height-loose: 2;
+
+// Letter spacing
+$letter-spacing-tight: -0.02em;
+$letter-spacing-normal: 0;
+$letter-spacing-wide: 0.02em;
+$letter-spacing-wider: 0.05em;
+$letter-spacing-widest: 0.3em;
+
+// =============================================================================
+// BREAKPOINTS (Mobile-first)
+// =============================================================================
+
+$breakpoint-mobile: 640px;
+$breakpoint-tablet: 768px;
+$breakpoint-md: 1024px;
+$breakpoint-desktop: 1280px;
+$breakpoint-lg: 1440px;
+$breakpoint-wide: 1920px;
+$breakpoint-max: 2560px;
+
+// Maximum width for containers
+$max-width: 1440px;
+
+// =============================================================================
+// SPACING
+// =============================================================================
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+$spacing-2xl: 32px;
+$spacing-3xl: 48px;
+$spacing-4xl: 64px;
+$spacing-5xl: 96px;
+$spacing-6xl: 128px;
+
+// Padding scale
+$padding-xs: $spacing-xs;
+$padding-sm: $spacing-sm;
+$padding-md: $spacing-md;
+$padding-lg: $spacing-lg;
+$padding-xl: $spacing-xl;
+$padding-2xl: $spacing-2xl;
+$padding-3xl: $spacing-3xl;
+
+// Margin scale
+$margin-xs: $spacing-xs;
+$margin-sm: $spacing-sm;
+$margin-md: $spacing-md;
+$margin-lg: $spacing-lg;
+$margin-xl: $spacing-xl;
+$margin-2xl: $spacing-2xl;
+$margin-3xl: $spacing-3xl;
+
+// Gap scale
+$gap-xs: $spacing-xs;
+$gap-sm: $spacing-sm;
+$gap-md: $spacing-md;
+$gap-lg: $spacing-lg;
+$gap-xl: $spacing-xl;
+$gap-2xl: $spacing-2xl;
+$gap-3xl: $spacing-3xl;
+
+// Responsive padding (left/right)
+$padding-responsive-sm: $spacing-lg; // mobile
+$padding-responsive-lg: $spacing-xl; // desktop
+
+// =============================================================================
+// BORDER RADIUS
+// =============================================================================
+
+$radius-sm: calc(10px - 4px); // 6px
+$radius-md: calc(10px - 2px); // 8px
+$radius-lg: 10px;
+$radius-xl: calc(10px + 4px); // 14px
+
+// =============================================================================
+// SHADOWS
+// =============================================================================
+
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$shadow-lg-gold: 0 12px 24px rgba(212, 175, 55, 0.3);
+$shadow-2xl-gold: 0 20px 40px rgba(212, 175, 55, 0.3);
+
+// =============================================================================
+// TRANSITIONS & ANIMATIONS
+// =============================================================================
+
+$transition-duration-fast: 150ms;
+$transition-duration-normal: 300ms;
+$transition-duration-slow: 500ms;
+$transition-duration-slower: 1000ms;
+
+$transition-timing-ease-in: cubic-bezier(0.4, 0, 1, 1);
+$transition-timing-ease-out: cubic-bezier(0, 0, 0.2, 1);
+$transition-timing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$transition-timing-ease-linear: linear;
+
+// =============================================================================
+// MIXINS
+// =============================================================================
+
+// Responsive design mixin
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: $breakpoint-mobile) {
+      @content;
+    }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $breakpoint-tablet) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (max-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == desktop {
+    @media (max-width: $breakpoint-desktop) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (max-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == wide {
+    @media (min-width: $breakpoint-wide) {
+      @content;
+    }
+  } @else if $breakpoint == max {
+    @media (min-width: $breakpoint-max) {
+      @content;
+    }
+  }
+}
+
+// Min-width responsive mixin
+@mixin min-width($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (min-width: $breakpoint-mobile) {
+      @content;
+    }
+  } @else if $breakpoint == tablet {
+    @media (min-width: $breakpoint-tablet) {
+      @content;
+    }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) {
+      @content;
+    }
+  } @else if $breakpoint == desktop {
+    @media (min-width: $breakpoint-desktop) {
+      @content;
+    }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) {
+      @content;
+    }
+  } @else if $breakpoint == wide {
+    @media (min-width: $breakpoint-wide) {
+      @content;
+    }
+  }
+}
+
+// Flexbox mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-center-v {
+  display: flex;
+  align-items: center;
+}
+
+@mixin flex-center-h {
+  display: flex;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// Grid mixins
+@mixin grid-layout($columns: 1, $gap: $gap-md) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+}
+
+// Typography mixins
+@mixin heading-style($size: 2rem, $weight: $font-weight-light, $line-height: $line-height-tight) {
+  font-family: $font-secondary;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height;
+  letter-spacing: $letter-spacing-wide;
+}
+
+@mixin body-text($size: $font-size-base, $weight: $font-weight-normal, $line-height: $line-height-normal) {
+  font-family: $font-primary;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height;
+}
+
+@mixin hero-heading {
+  @include heading-style(3rem, $font-weight-light, $line-height-tight);
+  
+  @include min-width(tablet) {
+    font-size: 4rem;
+  }
+  
+  @include min-width(desktop) {
+    font-size: 5rem;
+  }
+  
+  @include min-width(wide) {
+    font-size: 6rem;
+  }
+}
+
+@mixin section-heading {
+  @include heading-style(2.5rem, $font-weight-light, $line-height-tight);
+  
+  @include min-width(md) {
+    font-size: 3rem;
+  }
+  
+  @include min-width(lg) {
+    font-size: 3.5rem;
+  }
+}
+
+@mixin subheading {
+  @include heading-style(1.25rem, $font-weight-normal, $line-height-tight);
+  letter-spacing: $letter-spacing-wider;
+}
+
+@mixin caption-text {
+  @include body-text($font-size-sm, $font-weight-normal, $line-height-normal);
+  color: $color-text-muted;
+}
+
+// Transition mixin
+@mixin transition-smooth($properties: all, $duration: $transition-duration-normal, $timing: $transition-timing-ease-in-out) {
+  transition: $properties $duration $timing;
+}
+
+@mixin transition-fast($properties: all) {
+  @include transition-smooth($properties, $transition-duration-fast);
+}
+
+@mixin transition-slow($properties: all) {
+  @include transition-smooth($properties, $transition-duration-slow);
+}
+
+// Hover lift effect mixin
+@mixin hover-lift($amount: 4px) {
+  @include transition-smooth(transform, box-shadow);
+  
+  &:hover {
+    transform: translateY(-#{$amount});
+    box-shadow: $shadow-xl;
+  }
+}
+
+// Focus accessible mixin
+@mixin focus-visible {
+  &:focus-visible {
+    outline: 2px solid $color-accent;
+    outline-offset: 2px;
+  }
+}
+
+// Truncate text mixin
+@mixin truncate-text($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// Scrollbar styling mixin
+@mixin custom-scrollbar($width: 10px, $thumb-color: $color-accent, $track-color: $color-background) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: 5px;
+    
+    &:hover {
+      background: $color-accent-hover;
+    }
+  }
+}
+
+// Smooth scroll mixin
+@mixin smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+// Aspect ratio mixin
+@mixin aspect-ratio($width, $height) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    padding-bottom: percentage($height / $width);
+  }
+  
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Container query-style max-width mixin
+@mixin container-lg {
+  max-width: $max-width;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $padding-responsive-sm;
+  padding-right: $padding-responsive-sm;
+  
+  @include min-width(lg) {
+    padding-left: $padding-responsive-lg;
+    padding-right: $padding-responsive-lg;
+  }
+}
+
+// Grain texture overlay mixin
+@mixin grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2.5' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+// Parallax effect mixin
+@mixin parallax {
+  will-change: transform;
+}
+
+// =============================================================================
+// GLOBAL ANIMATIONS
+// =============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,144 @@
+// About section styles - variables injected by Vite
+
+.section {
+  padding: $spacing-3xl 0;
+  background-color: $color-background;
+}
+
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
+  
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+}
+
+.grid {
+  @include grid-layout(1, $gap-2xl);
+
+  @include min-width(md) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $gap-2xl;
+
+    @include min-width(lg) {
+      gap: $gap-3xl;
+    }
+  }
+
+  align-items: center;
+}
+
+.imageWrapper {
+  position: relative;
+
+  .decorativeBg {
+    position: absolute;
+    inset: -16px;
+    background-color: rgba($color-secondary, 0.2);
+    @include transition-smooth(transform, $transition-duration-slow);
+  }
+
+  &:hover .decorativeBg {
+    transform: rotate(6deg);
+  }
+
+  .imageContainer {
+    position: relative;
+    overflow: hidden;
+    @include transition-smooth(all, $transition-duration-slow);
+  }
+
+  img {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+    @include transition-smooth(filter, $transition-duration-slow);
+  }
+
+  &:hover img {
+    filter: grayscale(0%);
+  }
+
+  img.grayscale {
+    filter: grayscale(100%);
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-2xl;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-md;
+}
+
+.label {
+  color: $color-secondary;
+  letter-spacing: $letter-spacing-widest;
+  text-transform: uppercase;
+  font-size: $font-size-sm;
+  font-family: $font-primary;
+}
+
+.title {
+  @include section-heading;
+  margin: 0;
+  color: $color-foreground;
+}
+
+.textContent {
+  display: flex;
+  flex-direction: column;
+  gap: $gap-lg;
+  color: $color-text-muted;
+  line-height: $line-height-relaxed;
+
+  p {
+    margin: 0;
+    font-size: $font-size-lg;
+  }
+}
+
+.achievements {
+  @include grid-layout(3, $gap-xl);
+  padding-top: $padding-2xl;
+  border-top: 1px solid $color-border;
+
+  @include respond-to(mobile) {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: $gap-md;
+  }
+}
+
+.achievement {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: $gap-md;
+}
+
+.achievementIcon {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto;
+  color: $color-secondary;
+  stroke-width: 1.5px;
+}
+
+.achievementNumber {
+  @include heading-style($font-size-3xl, $font-weight-semibold, $line-height-tight);
+  color: $color-primary;
+  margin: 0;
+}
+
+.achievementLabel {
+  @include caption-text;
+  font-size: $font-size-sm;
+  color: $color-text-muted;
+}
