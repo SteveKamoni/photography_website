@@ -1,97 +1,186 @@
-// About section styles - variables injected by Vite
+// ─────────────────────────────────────────────────────────
+// About — Production · Mobile-first · Lensscape
+// ─────────────────────────────────────────────────────────
 
+// ── Shared reveal animation ───────────────────────────────
+// Applied via data-visible attribute toggled by IntersectionObserver.
+// All animated elements start hidden; JS sets data-visible="true" on scroll.
+
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes revealLeft {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes revealFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ── Section ───────────────────────────────────────────────
 .section {
   padding: $spacing-3xl 0;
   background-color: $color-background;
+  // Prevent decorativeBg from causing horizontal scroll
+  overflow-x: hidden;
 }
 
+// ── Container ─────────────────────────────────────────────
 .container {
   max-width: $max-width;
   margin: 0 auto;
   padding: 0 $padding-responsive-sm;
-  
+
   @include min-width(lg) {
     padding: 0 $padding-responsive-lg;
   }
 }
 
+// ── Grid ──────────────────────────────────────────────────
 .grid {
-  @include grid-layout(1, $gap-2xl);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $gap-2xl;
+  align-items: center;
 
   @include min-width(md) {
     grid-template-columns: repeat(2, 1fr);
     gap: $gap-2xl;
+  }
 
-    @include min-width(lg) {
-      gap: $gap-3xl;
+  @include min-width(lg) {
+    gap: $gap-3xl;
+  }
+}
+
+// ── Image wrapper ─────────────────────────────────────────
+.imageWrapper {
+  position: relative;
+  // Clip decorativeBg so it can't overflow the section on mobile
+  // We use padding instead of negative inset to stay within bounds
+  padding: 16px;
+
+  // ── Scroll reveal: slides in from left ──
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateX(-32px);
+
+    &[data-visible='true'] {
+      animation: revealLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
   }
 
-  align-items: center;
-}
-
-.imageWrapper {
-  position: relative;
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 
   .decorativeBg {
     position: absolute;
-    inset: -16px;
-    background-color: rgba($color-secondary, 0.2);
-    @include transition-smooth(transform, $transition-duration-slow);
+    inset: 0;
+    background-color: rgba($color-secondary, 0.18);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: 0;
   }
 
   &:hover .decorativeBg {
-    transform: rotate(6deg);
+    @media (hover: hover) and (pointer: fine) {
+      transform: rotate(5deg) scale(1.02);
+    }
   }
 
   .imageContainer {
     position: relative;
+    z-index: 1;
     overflow: hidden;
-    @include transition-smooth(all, $transition-duration-slow);
   }
 
   img {
     width: 100%;
-    height: 600px;
+    // aspect-ratio replaces hardcoded height — safe on all screen sizes
+    aspect-ratio: 3 / 4;
     object-fit: cover;
-    @include transition-smooth(filter, $transition-duration-slow);
+    object-position: center top;
+    display: block;
+    transition: filter 0.6s ease;
+
+    &.grayscale {
+      filter: grayscale(100%);
+    }
   }
 
-  &:hover img {
-    filter: grayscale(0%);
-  }
-
-  img.grayscale {
-    filter: grayscale(100%);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover img {
+      filter: grayscale(0%);
+    }
   }
 }
 
+// ── Content column ────────────────────────────────────────
 .content {
   display: flex;
   flex-direction: column;
   gap: $gap-2xl;
 }
 
+// ── Header block ──────────────────────────────────────────
 .header {
   display: flex;
   flex-direction: column;
   gap: $gap-md;
 }
 
+// Label — scroll reveal
 .label {
   color: $color-secondary;
   letter-spacing: $letter-spacing-widest;
   text-transform: uppercase;
   font-size: $font-size-sm;
   font-family: $font-primary;
+  margin: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(16px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 }
 
+// Title — scroll reveal, slight delay after label
 .title {
   @include section-heading;
   margin: 0;
   color: $color-foreground;
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(20px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 }
 
+// ── Body text ─────────────────────────────────────────────
 .textContent {
   display: flex;
   flex-direction: column;
@@ -101,18 +190,83 @@
 
   p {
     margin: 0;
-    font-size: $font-size-lg;
+    font-size: $font-size-base;
+
+    @include min-width(lg) {
+      font-size: $font-size-lg;
+    }
+
+    // Each paragraph reveals individually with staggered delays
+    @media (prefers-reduced-motion: no-preference) {
+      opacity: 0;
+      transform: translateY(18px);
+
+      &[data-visible='true'] {
+        animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+      }
+
+      &:nth-child(1)[data-visible='true'] { animation-delay: 0.20s; }
+      &:nth-child(2)[data-visible='true'] { animation-delay: 0.32s; }
+      &:nth-child(3)[data-visible='true'] { animation-delay: 0.44s; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      opacity: 1;
+      transform: none;
+    }
   }
 }
 
+// ── Achievements ──────────────────────────────────────────
 .achievements {
-  @include grid-layout(3, $gap-xl);
+  display: grid;
   padding-top: $padding-2xl;
   border-top: 1px solid $color-border;
 
-  @include respond-to(mobile) {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: $gap-md;
+  // Mobile: always 3 columns but with tighter constraints
+  grid-template-columns: repeat(3, 1fr);
+  gap: $gap-md;
+
+  // Below sm: stack into a single column to prevent text crush
+  @media (max-width: 479px) {
+    grid-template-columns: 1fr;
+    gap: $gap-lg;
+
+    // On single-column, switch to horizontal layout per item
+    .achievement {
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      gap: $gap-md;
+    }
+
+    .achievementIcon {
+      margin: 0;
+      flex-shrink: 0;
+    }
+  }
+
+  @include min-width(sm) {
+    gap: $gap-xl;
+  }
+
+  // Staggered reveal on the container — children delay via CSS var
+  @media (prefers-reduced-motion: no-preference) {
+    &[data-visible='false'] {
+      // Container itself is transparent until visible
+    }
+
+    &[data-visible='true'] .achievement {
+      animation: revealUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--delay, 0s);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .achievement {
+      opacity: 1;
+      transform: none;
+    }
   }
 }
 
@@ -120,25 +274,45 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: $gap-md;
+  gap: $gap-sm;
+
+  // Hidden until parent triggers
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
 .achievementIcon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   margin: 0 auto;
   color: $color-secondary;
-  stroke-width: 1.5px;
+  stroke-width: 1.5;
+
+  @include min-width(md) {
+    width: 32px;
+    height: 32px;
+  }
 }
 
 .achievementNumber {
-  @include heading-style($font-size-3xl, $font-weight-semibold, $line-height-tight);
+  @include heading-style($font-size-2xl, $font-weight-semibold, $line-height-tight);
   color: $color-primary;
   margin: 0;
+
+  @include min-width(md) {
+    font-size: $font-size-3xl;
+  }
 }
 
 .achievementLabel {
   @include caption-text;
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
   color: $color-text-muted;
+  line-height: $line-height-normal;
+
+  @include min-width(md) {
+    font-size: $font-size-sm;
+  }
 }

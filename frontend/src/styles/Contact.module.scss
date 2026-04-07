@@ -1,39 +1,83 @@
-// Contact section styles - variables injected by Vite
+// ─────────────────────────────────────────────────────────
+// Contact Section — Production · Animated · Lensscape
+// ─────────────────────────────────────────────────────────
 
+// ── Section shell ──────────────────────────────────────
 .section {
-  padding: $spacing-3xl 0;
+  padding: $spacing-4xl $padding-responsive-sm;
   background-color: $color-background;
+  position: relative;
+  overflow: hidden;
+
+  @include min-width(lg) {
+    padding: $spacing-4xl $padding-responsive-lg;
+  }
+
+  // Decorative background elements
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba($color-secondary, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba($color-secondary, 0.03) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
 }
 
 .container {
   max-width: $max-width;
   margin: 0 auto;
-  padding: 0 $padding-responsive-sm;
-  
-  @include min-width(lg) {
-    padding: 0 $padding-responsive-lg;
-  }
+  position: relative;
+  z-index: 1;
 }
 
+// ── Header Section ────────────────────────────────────
 .header {
   text-align: center;
-  max-width: 768px;
-  margin: 0 auto $spacing-3xl;
+  max-width: 720px;
+  margin: 0 auto $spacing-4xl;
+  animation: slideUpFade 0.8s ease-out 0.1s both;
+
+  @include min-width(lg) {
+    margin-bottom: $spacing-5xl;
+  }
 }
 
 .label {
   color: $color-secondary;
   letter-spacing: $letter-spacing-widest;
   text-transform: uppercase;
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
   font-family: $font-primary;
   display: block;
-  margin-bottom: $margin-md;
+  margin-bottom: $spacing-md;
+  @include transition-smooth(color);
+
+  &:hover {
+    color: $color-accent-hover;
+  }
 }
 
 .title {
   @include section-heading;
-  margin: 0 0 $margin-lg 0;
+  margin: 0 0 $spacing-lg 0;
+  color: $color-foreground;
 }
 
 .description {
@@ -41,17 +85,34 @@
   font-size: $font-size-lg;
   line-height: $line-height-relaxed;
   margin: 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
+// ── Grid Layout ────────────────────────────────────────
 .grid {
   @include grid-layout(1, $gap-3xl);
+  animation: slideUpFade 0.8s ease-out 0.2s both;
 
   @include min-width(lg) {
     grid-template-columns: 1fr 1fr;
+    gap: $gap-4xl;
   }
 }
 
-// Contact Form Section
+// ─────────────────────────────────────────────────────────
+// FORM SECTION
+// ─────────────────────────────────────────────────────────
+
+.formContainer {
+  animation: slideInLeft 0.6s ease-out 0.3s both;
+
+  @include min-width(lg) {
+    padding-right: $spacing-2xl;
+  }
+}
+
 .formSection {
   display: flex;
   flex-direction: column;
@@ -62,6 +123,12 @@
   display: flex;
   flex-direction: column;
   gap: $gap-sm;
+  animation: fadeIn 0.5s ease-out forwards;
+
+  // Stagger animation for each form group
+  &:nth-child(n + 3) {
+    animation-delay: calc(0.3s + (var(--index, 0) * 0.1s));
+  }
 }
 
 .label {
@@ -69,22 +136,41 @@
   font-weight: $font-weight-medium;
   color: $color-foreground;
   font-family: $font-primary;
+  display: flex;
+  align-items: center;
+  gap: $gap-xs;
+}
+
+.required {
+  color: $color-secondary;
+  font-weight: $font-weight-bold;
 }
 
 .input,
 .textarea,
 .select {
-  padding: $padding-md $padding-lg;
-  border: 1px solid $color-border;
-  background-color: transparent;
+  padding: $spacing-md $spacing-lg;
+  border: 2px solid $color-border;
+  background-color: $color-card;
   font-family: $font-primary;
   font-size: $font-size-base;
   color: $color-foreground;
-  @include transition-smooth(border-color, $transition-duration-normal);
+  @include transition-smooth(all, $transition-duration-normal);
+  border-radius: $radius-sm;
+
+  &:hover:not(:disabled) {
+    border-color: rgba($color-secondary, 0.3);
+  }
 
   &:focus {
     outline: none;
     border-color: $color-secondary;
+    box-shadow: 0 0 0 3px rgba($color-secondary, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
   &::placeholder {
@@ -95,48 +181,206 @@
 .textarea {
   resize: vertical;
   min-height: 150px;
+  font-family: $font-primary;
 }
 
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right $spacing-lg center;
+  background-size: 20px;
+  padding-right: $spacing-3xl;
+}
+
+.inputError {
+  border-color: $color-destructive;
+  box-shadow: 0 0 0 3px rgba($color-destructive, 0.1);
+}
+
+.errorText {
+  font-size: $font-size-sm;
+  color: $color-destructive;
+  font-weight: $font-weight-medium;
+  animation: slideDownFade 0.3s ease-out;
+}
+
+// Status Messages
+.successMessage,
+.errorMessage {
+  padding: $spacing-lg $spacing-xl;
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: flex-start;
+  gap: $gap-md;
+  margin-bottom: $spacing-lg;
+  animation: slideDownFade 0.4s ease-out;
+
+  h4 {
+    margin: 0 0 $spacing-xs 0;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+  }
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    line-height: $line-height-normal;
+  }
+}
+
+.successMessage {
+  background-color: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #2e7d32;
+}
+
+.errorMessage {
+  background-color: rgba($color-destructive, 0.1);
+  border: 1px solid rgba($color-destructive, 0.3);
+  color: $color-destructive;
+}
+
+.statusIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+// Submit Button
 .submitButton {
-  padding: $padding-lg $padding-2xl;
-  background-color: $color-secondary;
+  padding: $spacing-md $spacing-2xl;
+  background: linear-gradient(135deg, $color-secondary 0%, $color-accent 100%);
   color: $color-primary;
   border: none;
   cursor: pointer;
   font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
+  font-weight: $font-weight-semibold;
   letter-spacing: $letter-spacing-wider;
   font-family: $font-primary;
   @include transition-smooth(all, $transition-duration-normal);
+  border-radius: $radius-sm;
+  margin-top: $spacing-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $gap-sm;
+  position: relative;
+  overflow: hidden;
 
-  &:hover {
-    background-color: $color-accent-hover;
-    box-shadow: $shadow-lg-gold;
+  // Shine effect on hover
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    @include transition-smooth(left, $transition-duration-normal);
   }
 
-  &:active {
-    transform: scale(0.98);
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, $color-accent-hover 0%, color.adjust($color-accent, $lightness: -5%) 100%);
+    box-shadow: $shadow-lg-gold;
+    transform: translateY(-2px);
+
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: $shadow-md;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 2px;
   }
 }
 
-// Contact Information Section
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba($color-primary, 0.3);
+  border-top-color: $color-primary;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// INFO SECTION
+// ─────────────────────────────────────────────────────────
+
 .infoSection {
   display: flex;
   flex-direction: column;
   gap: $gap-3xl;
+  animation: slideInRight 0.6s ease-out 0.3s both;
+
+  @include min-width(lg) {
+    padding-left: $spacing-2xl;
+  }
 }
 
 .infoCard {
   display: flex;
   gap: $gap-lg;
+  @include transition-smooth(all, $transition-duration-normal);
+  padding: $spacing-lg;
+  border-radius: $radius-sm;
+  border: 1px solid rgba($color-secondary, 0.1);
+
+  &:hover {
+    border-color: rgba($color-secondary, 0.3);
+    background-color: rgba($color-secondary, 0.02);
+
+    .iconWrapper {
+      background-color: rgba($color-secondary, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .infoTitle {
+      color: $color-secondary;
+    }
+
+    .infoLink {
+      color: $color-accent-hover;
+    }
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background-color: rgba($color-secondary, 0.1);
+  border-radius: $radius-md;
+  flex-shrink: 0;
+  @include transition-smooth(all, $transition-duration-normal);
 }
 
 .infoIcon {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   color: $color-secondary;
-  flex-shrink: 0;
-  margin-top: $margin-sm;
   stroke-width: 1.5px;
 }
 
@@ -144,6 +388,7 @@
   display: flex;
   flex-direction: column;
   gap: $gap-sm;
+  flex: 1;
 }
 
 .infoTitle {
@@ -152,6 +397,7 @@
   color: $color-foreground;
   font-family: $font-primary;
   margin: 0;
+  @include transition-smooth(color);
 }
 
 .infoText {
@@ -159,42 +405,164 @@
   line-height: $line-height-relaxed;
   margin: 0;
   font-family: $font-primary;
+  font-size: $font-size-base;
 }
 
 .infoLink {
   color: $color-secondary;
   text-decoration: none;
+  font-weight: $font-weight-medium;
   @include transition-smooth(color);
 
   &:hover {
     color: $color-accent-hover;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 2px;
   }
 }
 
+// Social Links
 .socialLinks {
   display: flex;
   gap: $gap-md;
-  margin-top: $margin-lg;
+  margin-top: $spacing-sm;
+  flex-wrap: wrap;
 }
 
 .socialLink {
-  width: 40px;
-  height: 40px;
-  border: 1px solid $color-secondary;
+  width: 48px;
+  height: 48px;
+  border: 2px solid $color-secondary;
   background: none;
   cursor: pointer;
   @include flex-center;
   color: $color-secondary;
   @include transition-smooth(all, $transition-duration-normal);
+  border-radius: $radius-sm;
+  position: relative;
+  overflow: hidden;
+
+  // Background fill effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background-color: $color-secondary;
+    @include transition-smooth(left, $transition-duration-normal);
+    z-index: -1;
+  }
 
   &:hover {
-    background-color: $color-secondary;
     color: $color-primary;
+    transform: translateY(-3px);
+
+    &::before {
+      left: 0;
+    }
+  }
+
+  &:active {
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 2px;
   }
 
   svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     stroke-width: 1.5px;
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// ANIMATIONS
+// ─────────────────────────────────────────────────────────
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// RESPONSIVE ADJUSTMENTS
+// ─────────────────────────────────────────────────────────
+
+@include min-width(mobile) {
+  .infoCard {
+    padding: $spacing-md $spacing-lg;
+  }
+
+  .iconWrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .infoIcon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@include min-width(tablet) {
+  .grid {
+    gap: $gap-3xl;
   }
 }

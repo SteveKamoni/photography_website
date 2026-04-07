@@ -1,53 +1,92 @@
-// Work/Portfolio section styles - variables injected by Vite
+// ─────────────────────────────────────────────────────────
+// Work / Portfolio — Production · Mobile-first · Lensscape
+// ─────────────────────────────────────────────────────────
 
+// ── Keyframes ─────────────────────────────────────────────
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes revealFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ── Section ───────────────────────────────────────────────
 .section {
   padding: $spacing-3xl 0;
   background-color: $color-background;
+  overflow-x: hidden;
 }
 
+// ── Container ─────────────────────────────────────────────
 .container {
   max-width: $max-width;
   margin: 0 auto;
   padding: 0 $padding-responsive-sm;
-  
+
   @include min-width(lg) {
     padding: 0 $padding-responsive-lg;
   }
 }
 
+// ── Section header ────────────────────────────────────────
 .header {
   text-align: center;
-  max-width: 800px;
+  max-width: 680px;
   margin: 0 auto $spacing-3xl;
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(24px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .label {
+  display: block;
   color: $color-secondary;
   letter-spacing: $letter-spacing-widest;
   text-transform: uppercase;
   font-size: $font-size-sm;
   font-family: $font-primary;
-  display: block;
   margin-bottom: $margin-md;
 }
 
 .title {
   @include section-heading;
-  margin: 0 0 $margin-lg 0;
+  margin: 0 0 $margin-lg;
+  color: $color-foreground;
 }
 
 .description {
   color: $color-text-muted;
-  font-size: $font-size-lg;
+  font-size: $font-size-base;
   line-height: $line-height-relaxed;
   margin: 0;
-}
-
-.portfolioGrid {
-  @include grid-layout(1, $gap-lg);
-  margin-bottom: $margin-3xl;
 
   @include min-width(md) {
+    font-size: $font-size-lg;
+  }
+}
+
+// ── Portfolio grid ────────────────────────────────────────
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $gap-lg;
+  margin-bottom: $margin-3xl;
+
+  @include min-width(sm) {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -56,153 +95,303 @@
   }
 }
 
+// ── Portfolio item ────────────────────────────────────────
 .portfolioItem {
   position: relative;
   overflow: hidden;
   background-color: $color-primary;
-  aspect-ratio: 4/5;
+  aspect-ratio: 4 / 5;
   cursor: pointer;
-  @include parallax;
+  // GPU layer promotion for smooth transforms
+  will-change: transform;
+
+  // Scroll reveal
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(32px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--delay, 0s);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    @include transition-smooth(transform, $transition-duration-slow);
+    object-position: center;
+    display: block;
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  &:hover img {
-    transform: scale(1.1);
+  // Image zoom on hover — pointer devices only
+  @media (hover: hover) and (pointer: fine) {
+    &:hover img {
+      transform: scale(1.07);
+    }
+
+    &:hover .overlay {
+      opacity: 1;
+    }
+
+    &:hover .overlayContent {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    &:hover .borderAccent {
+      opacity: 1;
+      // inset animation instead of scale to avoid sub-pixel artifacts
+      inset: 10px;
+    }
+
+    // Hide mobile caption on desktop hover — overlay takes over
+    &:hover .mobileCaption {
+      opacity: 0;
+    }
+  }
+
+  // Focus state for keyboard navigation
+  &:focus-within .overlay {
+    opacity: 1;
+  }
+
+  &:focus-within .overlayContent {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
+// ── Hover overlay (desktop) ───────────────────────────────
 .overlay {
   position: absolute;
   inset: 0;
+  // Lightened so the photo still reads through at full opacity
   background: linear-gradient(
     to bottom,
-    rgba($color-primary, 0.8),
-    rgba($color-primary, 0.6),
-    rgba($color-primary, 0.9)
+    rgba($color-primary, 0.45) 0%,
+    rgba($color-primary, 0.35) 40%,
+    rgba($color-primary, 0.80) 100%
   );
-  @include transition-smooth(opacity, $transition-duration-normal);
   opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 
-  .portfolioItem:hover & {
-    opacity: 1;
+  // On touch: pointer-events stay none so the mobileCaption handles UX
+  @media (hover: none) {
+    display: none;
   }
 }
 
 .overlayContent {
   position: absolute;
   inset: 0;
-  @include flex-column;
-  justify-content: flex-end;
-  padding: $padding-2xl;
   display: flex;
   flex-direction: column;
-}
-
-.overlayText {
-  transform: translateY(16px);
+  justify-content: flex-end;
+  padding: $padding-2xl;
+  // Slide-up on hover
+  transform: translateY(12px);
   opacity: 0;
-  @include transition-smooth(all, $transition-duration-normal);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.4s ease;
+  pointer-events: none;
 
+  // Re-enable pointer events once visible so the button is clickable
   .portfolioItem:hover & {
-    transform: translateY(0);
-    opacity: 1;
+    pointer-events: auto;
   }
 }
 
 .portfolioCategory {
   color: $color-secondary;
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
   letter-spacing: $letter-spacing-wider;
   text-transform: uppercase;
-  margin-bottom: $margin-sm;
+  margin: 0 0 $margin-sm;
   font-family: $font-primary;
   font-weight: $font-weight-medium;
 }
 
 .portfolioTitle {
-  @include heading-style($font-size-3xl, $font-weight-medium, $line-height-tight);
-  color: white;
-  margin: 0 0 $margin-md 0;
+  @include heading-style($font-size-2xl, $font-weight-medium, $line-height-tight);
+  color: $color-foreground-light;
+  margin: 0 0 $margin-sm;
 }
 
 .portfolioDescription {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba($color-foreground-light, 0.78);
   font-size: $font-size-sm;
   line-height: $line-height-relaxed;
-  margin-bottom: $margin-md;
+  margin: 0 0 $margin-md;
 }
 
 .portfolioLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   color: $color-secondary;
-  @include flex-center-v;
-  gap: $gap-sm;
-  text-decoration: none;
-  font-size: $font-size-sm;
   background: none;
   border: none;
   cursor: pointer;
-  @include transition-fast;
   font-family: $font-primary;
-
-  &:hover {
-    gap: $gap-md;
-  }
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-wide;
+  padding: 0;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 
   svg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover svg {
+      transform: translateX(5px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 4px;
+    border-radius: 2px;
   }
 }
 
-.borderAccent {
+// ── Mobile gradient — always visible on touch ─────────────
+// Ensures title/category readable without hover interaction
+.mobileGradient {
   position: absolute;
   inset: 0;
-  border: 2px solid $color-secondary;
+  background: linear-gradient(
+    to bottom,
+    transparent 40%,
+    rgba($color-primary, 0.85) 100%
+  );
   pointer-events: none;
-  opacity: 0;
-  transform: scale(0.95);
-  @include transition-smooth(all, $transition-duration-normal);
+  transition: opacity 0.3s ease;
 
-  .portfolioItem:hover & {
-    opacity: 1;
-    transform: scale(1);
+  // On desktop this is replaced by the hover overlay
+  @media (hover: hover) and (pointer: fine) {
+    display: none;
   }
 }
 
+// ── Mobile caption — always visible on touch ──────────────
+.mobileCaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.25rem 1.25rem;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  // Hidden on desktop — overlay handles it
+  @media (hover: hover) and (pointer: fine) {
+    display: none;
+  }
+}
+
+.mobileCaptionCategory {
+  color: $color-secondary;
+  font-size: 10px;
+  font-family: $font-primary;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  margin: 0 0 0.2rem;
+}
+
+.mobileCaptionTitle {
+  color: $color-foreground-light;
+  font-family: $font-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  margin: 0;
+}
+
+// ── Border accent ─────────────────────────────────────────
+// Uses inset transition instead of scale to avoid sub-pixel rendering bugs
+.borderAccent {
+  position: absolute;
+  inset: 0;                          // starts flush
+  border: 1.5px solid $color-secondary;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease, inset 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+  @media (hover: hover) and (pointer: fine) {
+    // hover state driven by parent .portfolioItem:hover in block above
+  }
+}
+
+// ── View all CTA ──────────────────────────────────────────
 .viewAllButton {
   text-align: center;
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(20px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .buttonWrapper {
-  @include flex-center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: $gap-md;
   padding: $padding-lg $padding-2xl;
-  border: 2px solid $color-primary;
+  border: 1.5px solid $color-primary;
   background: none;
   cursor: pointer;
-  @include transition-smooth(all, $transition-duration-normal);
   font-family: $font-primary;
   font-size: $font-size-sm;
   letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
   color: $color-primary;
-
-  &:hover {
-    background-color: $color-primary;
-    color: $color-secondary;
-  }
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.35s ease, color 0.35s ease;
 
   svg {
-    width: 20px;
-    height: 20px;
-    @include transition-smooth(transform);
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
   }
 
-  &:hover svg {
-    transform: translateX(4px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: $color-primary;
+      color: $color-secondary;
+    }
+
+    &:hover svg {
+      transform: translateX(5px);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 4px;
   }
 }
