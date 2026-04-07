@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Work.module.scss';
 
 const portfolioItems = [
@@ -79,6 +80,7 @@ function useRevealOnScroll(ref, { threshold = 0.12 } = {}) {
 }
 
 export function Work() {
+  const navigate = useNavigate();
   const headerRef = useRef(null);
   const gridRef   = useRef(null);
   const ctaRef    = useRef(null);
@@ -200,6 +202,7 @@ export function Work() {
         >
           <button
             className={styles.buttonWrapper}
+            onClick={() => navigate('/portfolio')}
             type="button"
             aria-label="View the full Lensscape portfolio"
           >

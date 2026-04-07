@@ -96,16 +96,23 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
-          <p className={styles.copyright}>
-            © {new Date().getFullYear()} Lenscape Photography. All rights reserved.
-          </p>
-          <div className={styles.footerLinks}>
-            <a href="#" className={styles.footerLink}>
-              Privacy Policy
-            </a>
-            <a href="#" className={styles.footerLink}>
-              Terms of Service
-            </a>
+          <div className={styles.leftContent}>
+            <p className={styles.copyright}>
+              © {new Date().getFullYear()} Lenscape Photography. All rights reserved.
+            </p>
+            <div className={styles.footerLinks}>
+              <a href="#" className={styles.footerLink}>
+                Privacy Policy
+              </a>
+              <a href="#" className={styles.footerLink}>
+                Terms of Service
+              </a>
+            </div>
+          </div>
+          <div className={styles.brandCredit}>
+            <p className={styles.creditText}>
+              Designed & Built by <span className={styles.brandName}>KAMONI</span>
+            </p>
           </div>
         </div>
       </div>

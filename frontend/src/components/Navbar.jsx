@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styles from '../styles/Navbar.module.scss';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,24 +31,38 @@ export function Navbar() {
       <div className={styles.container}>
         <div className={styles.headerContent}>
           {/* Logo */}
-          <button 
-            onClick={() => scrollToSection('home')}
+          <Link 
+            to="/"
             className={styles.logo}
           >
             LENSCAPE
-          </button>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className={styles.nav}>
             {navItems.map((item) => (
               <button
                 key={item}
-                onClick={() => scrollToSection(item.toLowerCase())}
+                onClick={() => {
+                  if (location.pathname !== '/') {
+                    // If on portfolio page, navigate home first
+                    window.location.href = '/#' + item.toLowerCase();
+                  } else {
+                    // If on home page, scroll to section
+                    scrollToSection(item.toLowerCase());
+                  }
+                }}
                 className={styles.navItem}
               >
                 {item}
               </button>
             ))}
+            <Link 
+              to="/portfolio" 
+              className={styles.navItem}
+            >
+              Portfolio
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -70,7 +86,13 @@ export function Navbar() {
           {navItems.map((item, index) => (
             <button
               key={item}
-              onClick={() => scrollToSection(item.toLowerCase())}
+              onClick={() => {
+                if (location.pathname !== '/') {
+                  window.location.href = '/#' + item.toLowerCase();
+                } else {
+                  scrollToSection(item.toLowerCase());
+                }
+              }}
               className={styles.mobileNavItem}
               style={{ 
                 transitionDelay: mobileMenuOpen ? `${index * 50}ms` : '0ms'
@@ -79,6 +101,16 @@ export function Navbar() {
               {item}
             </button>
           ))}
+          <Link 
+            to="/portfolio" 
+            className={styles.mobileNavItem}
+            style={{ 
+              transitionDelay: mobileMenuOpen ? `${navItems.length * 50}ms` : '0ms'
+            }}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Portfolio
+          </Link>
         </nav>
       </div>
     </header>

@@ -1,0 +1,392 @@
+// ─────────────────────────────────────────────────────────
+// Portfolio Page — Production · Filtered · Responsive
+// ─────────────────────────────────────────────────────────
+
+// ── Section shell ──────────────────────────────────────
+.section {
+  background-color: $color-background;
+  min-height: 100vh;
+  position: relative;
+}
+
+// ── Hero Banner ────────────────────────────────────────
+.heroBanner {
+  position: relative;
+  height: 500px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: $spacing-4xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include min-width(md) {
+    height: 600px;
+  }
+
+  &[data-visible='false'] {
+    .heroContent {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+
+  &[data-visible='true'] {
+    .heroContent {
+      animation: slideUpFade 0.8s ease-out forwards;
+    }
+  }
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba($color-primary, 0.85) 0%,
+    rgba($color-primary, 0.65) 50%,
+    rgba($color-secondary, 0.1) 100%
+  );
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: $color-primary-light;
+  max-width: 800px;
+  padding: $spacing-3xl $spacing-lg;
+
+  @include min-width(md) {
+    padding: $spacing-4xl;
+  }
+}
+
+.heroTitle {
+  @include hero-heading;
+  margin: 0 0 $spacing-lg 0;
+  color: $color-primary-light;
+}
+
+.heroDescription {
+  font-size: $font-size-lg;
+  line-height: $line-height-relaxed;
+  color: rgba($color-primary-light, 0.9);
+  margin: 0;
+
+  @include min-width(md) {
+    font-size: $font-size-xl;
+  }
+}
+
+// ── Container ──────────────────────────────────────────
+.container {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
+
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+}
+
+// ── Filter Bar ─────────────────────────────────────────
+.filterBar {
+  display: flex;
+  gap: $gap-md;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: $spacing-4xl;
+  padding: $spacing-lg 0;
+
+  &[data-visible='false'] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  &[data-visible='true'] {
+    animation: slideUpFade 0.6s ease-out 0.2s both;
+  }
+
+  @include min-width(md) {
+    gap: $gap-lg;
+    margin-bottom: $spacing-5xl;
+  }
+
+  @media (max-width: 480px) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: $spacing-md;
+    
+    &::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba($color-secondary, 0.3);
+      border-radius: 2px;
+
+      &:hover {
+        background: rgba($color-secondary, 0.5);
+      }
+    }
+  }
+}
+
+.filterBtn {
+  padding: $spacing-sm $spacing-lg;
+  background-color: transparent;
+  border: 2px solid $color-secondary;
+  color: $color-foreground;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  letter-spacing: $letter-spacing-wider;
+  font-family: $font-primary;
+  text-transform: uppercase;
+  @include transition-smooth(all, $transition-duration-normal);
+  border-radius: $radius-sm;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover:not(.active) {
+    border-color: $color-accent-hover;
+    color: $color-accent-hover;
+  }
+
+  &.active {
+    background-color: $color-secondary;
+    color: $color-primary;
+    box-shadow: $shadow-lg-gold;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 2px;
+  }
+}
+
+// ── Portfolio Grid ─────────────────────────────────────
+.portfolioGrid {
+  @include grid-layout(1, $gap-2xl);
+  margin-bottom: $spacing-5xl;
+
+  @include min-width(mobile) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $gap-2xl;
+  }
+
+  @include min-width(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include min-width(lg) {
+    gap: $gap-3xl;
+  }
+
+}
+
+.portfolioItem {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  aspect-ratio: 1;
+  @include transition-smooth(transform, $transition-duration-normal);
+
+  &[data-visible='false'] {
+    opacity: 0;
+    transform: scale(0.95) translateY(30px);
+  }
+
+  &[data-visible='true'] {
+    animation: scaleInFade 0.6s ease-out forwards;
+    animation-delay: var(--delay, 0s);
+  }
+
+  &:hover {
+    transform: scale(1.02);
+
+    .itemOverlay {
+      opacity: 1;
+    }
+  }
+
+  &:focus-visible {
+    outline: 3px solid $color-secondary;
+    outline-offset: 2px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+}
+
+.itemOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba($color-primary, 0.85) 0%,
+    rgba($color-primary-light, 0.05) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: $spacing-lg;
+  opacity: 0;
+  @include transition-smooth(opacity, $transition-duration-normal);
+
+  @include min-width(md) {
+    justify-content: flex-end;
+    padding: $spacing-xl;
+  }
+}
+
+.itemContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  width: 100%;
+}
+
+.itemTitle {
+  color: $color-primary-light;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  margin: 0;
+  font-family: $font-primary;
+  line-height: $line-height-tight;
+
+  @include min-width(md) {
+    font-size: $font-size-xl;
+  }
+}
+
+.itemCategory {
+  color: $color-secondary;
+  font-size: $font-size-sm;
+  margin: 0;
+  font-family: $font-primary;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  font-weight: $font-weight-medium;
+}
+
+.itemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: rgba($color-secondary, 0.2);
+  border: 2px solid $color-secondary;
+  border-radius: $radius-md;
+  color: $color-secondary;
+  flex-shrink: 0;
+  margin-left: auto;
+
+  @include min-width(md) {
+    width: 56px;
+    height: 56px;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 1.5px;
+  }
+}
+
+// ── No Results Message ─────────────────────────────────
+.noResults {
+  text-align: center;
+  padding: $spacing-4xl $spacing-lg;
+  color: $color-text-muted;
+  font-size: $font-size-lg;
+  font-family: $font-primary;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  p {
+    margin: 0;
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// ANIMATIONS
+// ─────────────────────────────────────────────────────────
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleInFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// ─────────────────────────────────────────────────────────
+// RESPONSIVE ADJUSTMENTS
+// ─────────────────────────────────────────────────────────
+
+@include min-width(sm) {
+  .heroBanner {
+    height: 550px;
+  }
+
+  .heroTitle {
+    font-size: 3rem;
+  }
+
+  .filterBtn {
+    padding: $spacing-md $spacing-xl;
+  }
+
+  .portfolioGrid {
+    gap: $gap-2xl;
+  }
+}
+
+@include min-width(lg) {
+  .heroBanner {
+    margin-bottom: $spacing-5xl;
+  }
+
+  .filterBar {
+    margin-bottom: $spacing-5xl;
+  }
+
+  .portfolioItem {
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+}

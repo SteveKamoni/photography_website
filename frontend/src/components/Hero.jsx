@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Hero.module.scss';
 
 const heroImages = [
@@ -23,6 +24,7 @@ const SLIDE_DURATION = 6000;
 const TRANSITION_DURATION = 1000;
 
 export function Hero() {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex]   = useState(0);
   const [prevIndex, setPrevIndex]         = useState(null);
   const [transitioning, setTransitioning] = useState(false);
@@ -187,7 +189,7 @@ export function Hero() {
 
             <button
               className={styles.secondaryButton}
-              onClick={() => scrollTo('portfolio')}
+              onClick={() => navigate('/portfolio')}
               type="button"
             >
               View Portfolio

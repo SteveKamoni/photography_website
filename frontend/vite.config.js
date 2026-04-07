@@ -11,6 +11,7 @@ export default defineConfig({
         additionalData: `@use "_variables.scss" as *;
 @use "sass:color";
 `,
+        loadPaths: [path.resolve(__dirname, "./src/styles")],
       },
     },
   },
