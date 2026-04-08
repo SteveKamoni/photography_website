@@ -1,26 +1,47 @@
 // ─────────────────────────────────────────────────────────
-// Contact Section — Production · Animated · Lensscape
+// Contact — Production · Mobile-first · Lensscape
 // ─────────────────────────────────────────────────────────
 
-// ── Section shell ──────────────────────────────────────
+// ── Keyframes ─────────────────────────────────────────────
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes revealLeft {
+  from { opacity: 0; transform: translateX(-28px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes revealRight {
+  from { opacity: 0; transform: translateX(28px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes slideDownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ── Section ───────────────────────────────────────────────
 .section {
-  padding: $spacing-4xl $padding-responsive-sm;
+  padding: $spacing-3xl 0;
   background-color: $color-background;
   position: relative;
   overflow: hidden;
 
-  @include min-width(lg) {
-    padding: $spacing-4xl $padding-responsive-lg;
-  }
-
-  // Decorative background elements
+  // Subtle background glows — decorative only
   &::before {
     content: '';
     position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 600px;
-    height: 600px;
+    top: -200px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
     background: radial-gradient(circle, rgba($color-secondary, 0.05) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
@@ -29,71 +50,85 @@
   &::after {
     content: '';
     position: absolute;
-    bottom: -30%;
-    left: -5%;
-    width: 400px;
-    height: 400px;
+    bottom: -150px;
+    left: -80px;
+    width: 380px;
+    height: 380px;
     background: radial-gradient(circle, rgba($color-secondary, 0.03) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
   }
 }
 
+// ── Container ─────────────────────────────────────────────
 .container {
   max-width: $max-width;
   margin: 0 auto;
+  padding: 0 $padding-responsive-sm;
   position: relative;
   z-index: 1;
-}
-
-// ── Header Section ────────────────────────────────────
-.header {
-  text-align: center;
-  max-width: 720px;
-  margin: 0 auto $spacing-4xl;
-  animation: slideUpFade 0.8s ease-out 0.1s both;
 
   @include min-width(lg) {
-    margin-bottom: $spacing-5xl;
+    padding: 0 $padding-responsive-lg;
   }
 }
 
-.label {
+// ── Header ────────────────────────────────────────────────
+.header {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto $spacing-3xl;
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(24px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ── Section eyebrow label (NOT a form field label) ────────
+// Split from .label to avoid CSS Modules collision with .fieldLabel
+.sectionLabel {
+  display: block;
   color: $color-secondary;
   letter-spacing: $letter-spacing-widest;
   text-transform: uppercase;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
   font-family: $font-primary;
-  display: block;
-  margin-bottom: $spacing-md;
-  @include transition-smooth(color);
-
-  &:hover {
-    color: $color-accent-hover;
-  }
+  margin-bottom: $margin-md;
 }
 
 .title {
   @include section-heading;
-  margin: 0 0 $spacing-lg 0;
+  margin: 0 0 $margin-lg;
   color: $color-foreground;
 }
 
 .description {
   color: $color-text-muted;
-  font-size: $font-size-lg;
+  font-size: $font-size-base;
   line-height: $line-height-relaxed;
-  margin: 0;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  max-width: 560px;
+
+  @include min-width(md) {
+    font-size: $font-size-lg;
+  }
 }
 
-// ── Grid Layout ────────────────────────────────────────
+// ── Two-column grid ───────────────────────────────────────
 .grid {
-  @include grid-layout(1, $gap-3xl);
-  animation: slideUpFade 0.8s ease-out 0.2s both;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $gap-3xl;
 
   @include min-width(lg) {
     grid-template-columns: 1fr 1fr;
@@ -102,11 +137,23 @@
 }
 
 // ─────────────────────────────────────────────────────────
-// FORM SECTION
+// FORM COLUMN
 // ─────────────────────────────────────────────────────────
 
 .formContainer {
-  animation: slideInLeft 0.6s ease-out 0.3s both;
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateX(-28px);
+
+    &[data-visible='true'] {
+      animation: revealLeft 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 
   @include min-width(lg) {
     padding-right: $spacing-2xl;
@@ -123,15 +170,11 @@
   display: flex;
   flex-direction: column;
   gap: $gap-sm;
-  animation: fadeIn 0.5s ease-out forwards;
-
-  // Stagger animation for each form group
-  &:nth-child(n + 3) {
-    animation-delay: calc(0.3s + (var(--index, 0) * 0.1s));
-  }
 }
 
-.label {
+// ── Form field label ──────────────────────────────────────
+// Separate class from .sectionLabel — different role, different styles
+.fieldLabel {
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: $color-foreground;
@@ -146,20 +189,29 @@
   font-weight: $font-weight-bold;
 }
 
+// ── Inputs ────────────────────────────────────────────────
 .input,
 .textarea,
 .select {
   padding: $spacing-md $spacing-lg;
-  border: 2px solid $color-border;
+  border: 1.5px solid $color-border;
   background-color: $color-card;
   font-family: $font-primary;
   font-size: $font-size-base;
   color: $color-foreground;
-  @include transition-smooth(all, $transition-duration-normal);
-  border-radius: $radius-sm;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  width: 100%;
+  // No border-radius — matches the sharp editorial aesthetic of the site
 
-  &:hover:not(:disabled) {
-    border-color: rgba($color-secondary, 0.3);
+  &::placeholder {
+    color: $color-text-muted;
+    font-size: $font-size-sm;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      border-color: rgba($color-secondary, 0.4);
+    }
   }
 
   &:focus {
@@ -169,57 +221,63 @@
   }
 
   &:disabled {
-    opacity: 0.6;
+    opacity: 0.55;
     cursor: not-allowed;
-  }
-
-  &::placeholder {
-    color: $color-text-muted;
   }
 }
 
 .textarea {
   resize: vertical;
-  min-height: 150px;
+  min-height: 148px;
   font-family: $font-primary;
+  line-height: $line-height-relaxed;
 }
 
 .select {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  -webkit-appearance: none;
+  // Custom chevron — colour matches $color-foreground
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right $spacing-lg center;
-  background-size: 20px;
+  background-size: 18px;
   padding-right: $spacing-3xl;
+  cursor: pointer;
 }
 
 .inputError {
-  border-color: $color-destructive;
-  box-shadow: 0 0 0 3px rgba($color-destructive, 0.1);
+  border-color: $color-destructive !important;
+  box-shadow: 0 0 0 3px rgba($color-destructive, 0.08) !important;
 }
 
 .errorText {
-  font-size: $font-size-sm;
+  font-size: $font-size-xs;
   color: $color-destructive;
   font-weight: $font-weight-medium;
-  animation: slideDownFade 0.3s ease-out;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: slideDownFade 0.25s ease both;
+  }
 }
 
-// Status Messages
+// ── Status messages ───────────────────────────────────────
 .successMessage,
 .errorMessage {
   padding: $spacing-lg $spacing-xl;
-  border-radius: $radius-sm;
   display: flex;
   align-items: flex-start;
   gap: $gap-md;
-  margin-bottom: $spacing-lg;
-  animation: slideDownFade 0.4s ease-out;
+  border: 1px solid;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: slideDownFade 0.35s ease both;
+  }
 
   h4 {
-    margin: 0 0 $spacing-xs 0;
+    margin: 0 0 $spacing-xs;
     font-size: $font-size-base;
     font-weight: $font-weight-semibold;
+    font-family: $font-primary;
   }
 
   p {
@@ -230,46 +288,48 @@
 }
 
 .successMessage {
-  background-color: rgba(76, 175, 80, 0.1);
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background-color: rgba(76, 175, 80, 0.08);
+  border-color: rgba(76, 175, 80, 0.3);
   color: #2e7d32;
 }
 
 .errorMessage {
-  background-color: rgba($color-destructive, 0.1);
-  border: 1px solid rgba($color-destructive, 0.3);
+  background-color: rgba($color-destructive, 0.08);
+  border-color: rgba($color-destructive, 0.3);
   color: $color-destructive;
 }
 
 .statusIcon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
   margin-top: 2px;
 }
 
-// Submit Button
+// ── Submit button ─────────────────────────────────────────
 .submitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $gap-sm;
   padding: $spacing-md $spacing-2xl;
-  background: linear-gradient(135deg, $color-secondary 0%, $color-accent 100%);
+  background-color: $color-secondary;
   color: $color-primary;
   border: none;
   cursor: pointer;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
   font-family: $font-primary;
-  @include transition-smooth(all, $transition-duration-normal);
-  border-radius: $radius-sm;
-  margin-top: $spacing-lg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: $gap-sm;
   position: relative;
   overflow: hidden;
+  min-height: 52px;
+  transition: box-shadow 0.3s ease, opacity 0.3s ease, transform 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+  margin-top: $spacing-sm;
 
-  // Shine effect on hover
+  // Shine sweep
   &::before {
     content: '';
     position: absolute;
@@ -277,61 +337,67 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    @include transition-smooth(left, $transition-duration-normal);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.45s ease;
   }
 
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, $color-accent-hover 0%, color.adjust($color-accent, $lightness: -5%) 100%);
-    box-shadow: $shadow-lg-gold;
-    transform: translateY(-2px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      box-shadow: $shadow-lg-gold;
+      transform: translateY(-2px);
 
-    &::before {
-      left: 100%;
+      &::before { left: 100%; }
     }
   }
 
   &:active:not(:disabled) {
     transform: translateY(0);
-    box-shadow: $shadow-md;
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.65;
     cursor: not-allowed;
   }
 
   &:focus-visible {
     outline: 2px solid $color-secondary;
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 }
 
 .spinner {
   display: inline-block;
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border: 2px solid rgba($color-primary, 0.3);
   border-top-color: $color-primary;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  animation: spin 0.75s linear infinite;
+  flex-shrink: 0;
 }
 
 // ─────────────────────────────────────────────────────────
-// INFO SECTION
+// INFO COLUMN
 // ─────────────────────────────────────────────────────────
 
 .infoSection {
   display: flex;
   flex-direction: column;
-  gap: $gap-3xl;
-  animation: slideInRight 0.6s ease-out 0.3s both;
+  gap: $gap-2xl;
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateX(28px);
+
+    &[data-visible='true'] {
+      animation: revealRight 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
 
   @include min-width(lg) {
     padding-left: $spacing-2xl;
@@ -341,26 +407,23 @@
 .infoCard {
   display: flex;
   gap: $gap-lg;
-  @include transition-smooth(all, $transition-duration-normal);
   padding: $spacing-lg;
-  border-radius: $radius-sm;
   border: 1px solid rgba($color-secondary, 0.1);
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 
-  &:hover {
-    border-color: rgba($color-secondary, 0.3);
-    background-color: rgba($color-secondary, 0.02);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: rgba($color-secondary, 0.3);
+      background-color: rgba($color-secondary, 0.02);
 
-    .iconWrapper {
-      background-color: rgba($color-secondary, 0.15);
-      transform: translateY(-4px);
-    }
+      .iconWrapper {
+        background-color: rgba($color-secondary, 0.15);
+        transform: translateY(-3px);
+      }
 
-    .infoTitle {
-      color: $color-secondary;
-    }
-
-    .infoLink {
-      color: $color-accent-hover;
+      .infoTitle {
+        color: $color-secondary;
+      }
     }
   }
 }
@@ -369,19 +432,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   background-color: rgba($color-secondary, 0.1);
-  border-radius: $radius-md;
   flex-shrink: 0;
-  @include transition-smooth(all, $transition-duration-normal);
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .infoIcon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   color: $color-secondary;
-  stroke-width: 1.5px;
+  stroke-width: 1.5;
 }
 
 .infoContent {
@@ -392,12 +454,16 @@
 }
 
 .infoTitle {
-  font-size: $font-size-lg;
+  font-size: $font-size-base;
   font-weight: $font-weight-semibold;
   color: $color-foreground;
   font-family: $font-primary;
   margin: 0;
-  @include transition-smooth(color);
+  transition: color 0.3s ease;
+
+  @include min-width(md) {
+    font-size: $font-size-lg;
+  }
 }
 
 .infoText {
@@ -412,157 +478,75 @@
   color: $color-secondary;
   text-decoration: none;
   font-weight: $font-weight-medium;
-  @include transition-smooth(color);
+  font-size: $font-size-base;
+  transition: color 0.25s ease;
 
-  &:hover {
-    color: $color-accent-hover;
-    text-decoration: underline;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
   }
 
   &:focus-visible {
     outline: 2px solid $color-secondary;
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 }
 
-// Social Links
+// ── Social links ──────────────────────────────────────────
 .socialLinks {
   display: flex;
   gap: $gap-md;
-  margin-top: $spacing-sm;
   flex-wrap: wrap;
+  margin-top: $spacing-sm;
 }
 
 .socialLink {
   width: 48px;
   height: 48px;
-  border: 2px solid $color-secondary;
+  border: 1.5px solid $color-secondary;
   background: none;
-  cursor: pointer;
-  @include flex-center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: $color-secondary;
-  @include transition-smooth(all, $transition-duration-normal);
-  border-radius: $radius-sm;
+  text-decoration: none;
   position: relative;
   overflow: hidden;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 
-  // Background fill effect
+  // Fill sweep on hover
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: $color-secondary;
-    @include transition-smooth(left, $transition-duration-normal);
-    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 0;
   }
 
-  &:hover {
-    color: $color-primary;
-    transform: translateY(-3px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: $color-primary;
 
-    &::before {
-      left: 0;
+      &::before { transform: scaleY(1); }
     }
-  }
-
-  &:active {
-    transform: translateY(-1px);
   }
 
   &:focus-visible {
     outline: 2px solid $color-secondary;
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
 
   svg {
-    width: 24px;
-    height: 24px;
-    stroke-width: 1.5px;
-  }
-}
-
-// ─────────────────────────────────────────────────────────
-// ANIMATIONS
-// ─────────────────────────────────────────────────────────
-
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideDownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-// ─────────────────────────────────────────────────────────
-// RESPONSIVE ADJUSTMENTS
-// ─────────────────────────────────────────────────────────
-
-@include min-width(mobile) {
-  .infoCard {
-    padding: $spacing-md $spacing-lg;
-  }
-
-  .iconWrapper {
-    width: 48px;
-    height: 48px;
-  }
-
-  .infoIcon {
-    width: 24px;
-    height: 24px;
-  }
-}
-
-@include min-width(tablet) {
-  .grid {
-    gap: $gap-3xl;
+    width: 20px;
+    height: 20px;
+    stroke-width: 1.5;
+    position: relative;
+    z-index: 1;
   }
 }

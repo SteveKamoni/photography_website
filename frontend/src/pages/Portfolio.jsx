@@ -1,8 +1,9 @@
+// src/pages/Portfolio.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Lightbox } from '../components/Lightbox';
 import styles from '../styles/pages/Portfolio.module.scss';
 
-// ── Expanded portfolio items across multiple categories ────
+// ── Portfolio items ───────────────────────────────────────
 const portfolioItems = [
   // Wedding
   {
@@ -23,10 +24,9 @@ const portfolioItems = [
     id: 3,
     title: 'Spring Garden Wedding',
     category: 'Wedding',
-    image: 'https://images.unsplash.com/photo-1704699217822-b97dbd6a3f4a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3ZWRkaW5nJTIwb3V0ZG9vcnxlbnwxfHx8fDE3NjgyODkxNzl8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://images.unsplash.com/photo-1684244177286-8625c54bce6d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
     description: 'Romantic garden ceremony with natural light',
   },
-
   // Portrait
   {
     id: 4,
@@ -49,7 +49,6 @@ const portfolioItems = [
     image: 'https://images.unsplash.com/photo-1603132789551-47b97377046e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21hbiUyMGVsZWdhbnQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NjgxMTIxMzd8MA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'Professional studio portraits in controlled lighting',
   },
-
   // Commercial
   {
     id: 7,
@@ -67,12 +66,11 @@ const portfolioItems = [
   },
   {
     id: 9,
-    title: 'Corporate Event Coverage',
+    title: 'Brand Storytelling',
     category: 'Commercial',
-    image: 'https://images.unsplash.com/photo-1519501025264-065cf004f348?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3Jwb3JhdGUlMjBldmVudHxlbnwxfHx8fDE3NjgyMDcyNzB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    description: 'Professional event documentation and coverage',
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmFuZCUyMHN0b3J5dGVsbGluZyUyMGJ1c2luZXNzfGVufDF8fHx8MTc2ODIwNzM3MXww&ixlib=rb-4.1.0&q=80&w=1080',
+    description: 'Visual storytelling for brand campaigns',
   },
-
   // Fashion
   {
     id: 10,
@@ -81,65 +79,85 @@ const portfolioItems = [
     image: 'https://images.unsplash.com/photo-1700150595270-499a1ce07804?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwbW9kZWwlMjBlZGl0b3JpYWx8ZW58MXx8fHwxNzY4MTY3NTk3fDA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'High fashion meets artistic expression',
   },
+
   {
     id: 11,
     title: 'Luxury Branding',
     category: 'Fashion',
-    image: 'https://images.unsplash.com/photo-1545170122-fc7cdb32983f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBmYXNoaW9uJTIwYnJhbmR8ZW58MXx8fHwxNzY4MTg1NjcyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://images.unsplash.com/photo-1717766293792-e78ea97e9d68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwcGhvdG9ncmFwaHklMjBzdHVkaW98ZW58MXx8fHwxNzY4MTI2MzY0fDA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'Brand imagery for luxury fashion collections',
   },
-
-  // Lifestyle/Event
+  {
+    id: 17,
+    title: 'Studio Fashion Shoot',
+    category: 'Fashion',
+    image: 'https://images.pexels.com/photos/31905471/pexels-photo-31905471.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    description: 'Professional fashion photography in a studio setting',
+  },
+  {
+    id: 18,
+    title: 'Runway Highlights',
+    category: 'Fashion',
+    image: 'https://images.pexels.com/photos/31426291/pexels-photo-31426291.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    description: 'Dynamic runway photography capturing the energy of fashion shows',
+  },
+  // Event
   {
     id: 12,
     title: 'Celebration Moments',
     category: 'Event',
-    image: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXJ0eSUyMGNlbGVicmF0aW9uJTIwZXZlbnR8ZW58MXx8fHwxNzY4MjA3MzA2fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://images.unsplash.com/photo-1658063715878-bff71ed96a81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldmVudCUyMHBob3RvZ3JhcGh5JTIwY2VsZWJyYXRpb258ZW58MXx8fHwxNzY4MjA3MTEzfDA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'Capturing joy and celebration at special events',
   },
   {
     id: 13,
+    title: 'Corporate Gala',
+    category: 'Event',
+    image: 'https://images.pexels.com/photos/15551978/pexels-photo-15551978.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    description: 'Professional event documentation and coverage',
+  },
+  {
+    id: 19,
+    title: 'Tech Conference',
+    category: 'Event',
+    image: 'https://images.pexels.com/photos/22669860/pexels-photo-22669860.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+    description: 'Capturing the excitement and innovation of tech conferences',
+  },
+  // Lifestyle
+  {
+    id: 14,
     title: 'Intimate Gathering',
     category: 'Lifestyle',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbnRpbWF0ZSUyMGdhdGhlcmluZyUyMHBlb3BsZXxlbnwxfHx8fDE3NjgyMDczMzV8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://images.unsplash.com/photo-1724866525512-5658ee2e2d3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaWZlc3R5bGUlMjBwaG90b2dyYXBoeSUyMGhvbWV8ZW58MXx8fHwxNzY4MjA3MTE1fDA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'Lifestyle photography capturing authentic moments',
   },
   {
-    id: 14,
-    title: 'Urban Lifestyle',
-    category: 'Lifestyle',
-    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1cmJhbiUyMGxpZmVzdHlsZSUyMHBob3RvZ3JhcGh8ZW58MXx8fHwxNzY4MjA3MzU3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    description: 'Modern urban lifestyle imagery',
-  },
-  {
     id: 15,
-    title: 'Brand Storytelling',
-    category: 'Commercial',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicmFuZCUyMHN0b3J5dGVsbGluZyUyMGJ1c2luZXNzfGVufDF8fHx8MTc2ODIwNzM3MXww&ixlib=rb-4.1.0&q=80&w=1080',
-    description: 'Visual storytelling for brand campaigns',
-  },
-  {
-    id: 16,
     title: 'Nature & Landscape',
     category: 'Lifestyle',
     image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuYXR1cmUlMjBsYW5kc2NhcGUlMjBiZWF1dHlmb2x8ZW58MXx8fHwxNzY4MjA3Mzc5fDA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'Breathtaking landscape and nature photography',
   },
+  {
+    id: 16,
+    title: 'Urban Lifestyle',
+    category: 'Lifestyle',
+    image: 'https://images.unsplash.com/photo-1636969386919-b90cad8216e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYXJjaGl0ZWN0dXJlJTIwbW9kZXJufGVufDF8fHx8MTc2ODE3ODQwOXww&ixlib=rb-4.1.0&q=80&w=1080',
+    description: 'Modern urban lifestyle imagery',
+  },
 ];
 
-const categories = ['All', 'Wedding', 'Portrait', 'Commercial', 'Fashion', 'Lifestyle', 'Event'];
+const categories = ['All', 'Wedding', 'Portrait', 'Commercial', 'Fashion', 'Event', 'Lifestyle'];
 
-// ── Reveal on scroll hook ──────────────────────────────────
+// ── Reveal hook ───────────────────────────────────────────
 function useRevealOnScroll(ref, { threshold = 0.12 } = {}) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       el.dataset.visible = 'true';
       return;
     }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -149,44 +167,42 @@ function useRevealOnScroll(ref, { threshold = 0.12 } = {}) {
       },
       { threshold }
     );
-
     observer.observe(el);
     return () => observer.disconnect();
   }, [ref]);
 }
 
-// ── Portfolio Page Component ──────────────────────────────
 export function Portfolio() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [lightboxIndex, setLightboxIndex]   = useState(null);
+  const [itemsVisible, setItemsVisible]     = useState(false);
   const headerRef = useRef(null);
   const filterRef = useRef(null);
-  const gridRef = useRef(null);
+  const gridRef   = useRef(null);
 
-  useRevealOnScroll(headerRef, { threshold: 0.2 });
-  useRevealOnScroll(filterRef, { threshold: 0.2 });
+  useRevealOnScroll(headerRef, { threshold: 0.1 });
+  useRevealOnScroll(filterRef, { threshold: 0.15 });
 
-  // Filter items based on category
   const filteredItems = activeCategory === 'All'
     ? portfolioItems
-    : portfolioItems.filter(item => item.category === activeCategory);
+    : portfolioItems.filter((item) => item.category === activeCategory);
 
-  // Grid items stagger in via single observer
+  // ── Grid visibility ────────────────────────────────────
+  // Separate from IntersectionObserver so it re-triggers on filter change.
+  // On first mount, observe the grid. After that, manage via state.
   useEffect(() => {
     const grid = gridRef.current;
     if (!grid) return;
 
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      grid.querySelectorAll('[data-item]').forEach((el) => { el.dataset.visible = 'true'; });
+      setItemsVisible(true);
       return;
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          entry.target
-            .querySelectorAll('[data-item]')
-            .forEach((el) => { el.dataset.visible = 'true'; });
+          setItemsVisible(true);
           observer.unobserve(entry.target);
         }
       },
@@ -196,10 +212,21 @@ export function Portfolio() {
     return () => observer.disconnect();
   }, []);
 
-  const openLightbox = useCallback((index) => {
-    // Find the index in the filtered items and map back to the original items
-    const actualIndex = portfolioItems.findIndex(item => item.id === filteredItems[index].id);
-    setLightboxIndex(actualIndex);
+  // Re-animate grid items when category changes
+  // Small delay so the new items render before we set visible
+  const handleCategoryChange = useCallback((category) => {
+    setItemsVisible(false);
+    setActiveCategory(category);
+    setTimeout(() => setItemsVisible(true), 60);
+  }, []);
+
+  // ── Lightbox ───────────────────────────────────────────
+  // Lightbox navigates through ALL items regardless of filter
+  const openLightbox = useCallback((filteredIndex) => {
+    const globalIndex = portfolioItems.findIndex(
+      (item) => item.id === filteredItems[filteredIndex].id
+    );
+    setLightboxIndex(globalIndex);
   }, [filteredItems]);
 
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
@@ -210,87 +237,162 @@ export function Portfolio() {
 
   return (
     <>
-      <section className={styles.section} aria-labelledby="portfolio-heading">
-        {/* Hero Banner */}
-        <div className={styles.heroBanner} ref={headerRef} data-visible="false">
-          <div className={styles.heroOverlay}></div>
-          <div className={styles.heroContent}>
-            <h1 id="portfolio-heading" className={styles.heroTitle}>Our Portfolio</h1>
-            <p className={styles.heroDescription}>
-              A comprehensive showcase of our finest work across all categories
-            </p>
-          </div>
-        </div>
+      <main className={styles.page} aria-labelledby="portfolio-heading">
 
-        <div className={styles.container}>
-          {/* Filter Bar */}
+        {/* ════════════════════════════════════════
+            HERO — full cinematic treatment
+        ════════════════════════════════════════ */}
+        <section className={styles.hero}>
+
+          {/* Background image */}
+          <div className={styles.heroBg} aria-hidden="true">
+            <img
+              src="https://images.unsplash.com/photo-1720729823943-19fff3227f84?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBwaG90b2dyYXBoeSUyMGhlcm98ZW58MXx8fHwxNzY4MjA3MDU2fDA&ixlib=rb-4.1.0&q=80&w=1080"
+              alt=""
+              className={styles.heroBgImage}
+              loading="eager"
+              decoding="async"
+            />
+          </div>
+
+          {/* Overlay layers */}
+          <div className={styles.heroOverlayBase}   aria-hidden="true" />
+          <div className={styles.heroOverlayLeft}   aria-hidden="true" />
+          <div className={styles.heroOverlayBottom} aria-hidden="true" />
+
+          {/* Hero content */}
           <div
-            className={styles.filterBar}
-            ref={filterRef}
+            className={styles.heroContent}
+            ref={headerRef}
             data-visible="false"
-            role="group"
-            aria-label="Filter portfolio by category"
           >
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`${styles.filterBtn} ${activeCategory === category ? styles.active : ''}`}
-                onClick={() => setActiveCategory(category)}
-                aria-pressed={activeCategory === category}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          {/* Portfolio Grid */}
-          <div
-            className={styles.portfolioGrid}
-            ref={gridRef}
-            role="list"
-          >
-            {filteredItems.map((item, index) => (
-              <button
-                key={item.id}
-                className={styles.portfolioItem}
-                data-item
-                data-visible="false"
-                style={{ '--delay': `${index * 0.07}s` }}
-                onClick={() => openLightbox(index)}
-                type="button"
-                aria-label={`Open image — ${item.title}`}
-                role="listitem"
-              >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div className={styles.itemOverlay} aria-hidden="true">
-                  <div className={styles.itemContent}>
-                    <h3 className={styles.itemTitle}>{item.title}</h3>
-                    <p className={styles.itemCategory}>{item.category}</p>
-                  </div>
-                  <div className={styles.itemIcon}>
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                    </svg>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* No results message */}
-          {filteredItems.length === 0 && (
-            <div className={styles.noResults}>
-              <p>No items found in this category.</p>
+            <div className={styles.heroEyebrow}>
+              <span className={styles.heroEyebrowLine} aria-hidden="true" />
+              <span className={styles.heroEyebrowText}>Lensscape · Our Work</span>
             </div>
-          )}
+
+            <h1 id="portfolio-heading" className={styles.heroTitle}>
+              Our Portfolio
+            </h1>
+
+            <p className={styles.heroDescription}>
+              A comprehensive showcase of celebrated Lensscape work — weddings,
+              portraits, editorial, commercial, and everything in between.
+            </p>
+
+            <div className={styles.heroStats}>
+              <div className={styles.heroStat}>
+                <span className={styles.heroStatNumber}>16<em>+</em></span>
+                <span className={styles.heroStatLabel}>Featured Works</span>
+              </div>
+              <div className={styles.heroStatDivider} aria-hidden="true" />
+              <div className={styles.heroStat}>
+                <span className={styles.heroStatNumber}>6</span>
+                <span className={styles.heroStatLabel}>Categories</span>
+              </div>
+              <div className={styles.heroStatDivider} aria-hidden="true" />
+              <div className={styles.heroStat}>
+                <span className={styles.heroStatNumber}>800<em>+</em></span>
+                <span className={styles.heroStatLabel}>Sessions Delivered</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Scroll cue */}
+          <div className={styles.scrollCue} aria-hidden="true">
+            <span className={styles.scrollLine} />
+            <span className={styles.scrollText}>Scroll</span>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════
+            FILTER + GRID
+        ════════════════════════════════════════ */}
+        <div className={styles.gridSection}>
+          <div className={styles.container}>
+
+            {/* Filter bar */}
+            <div
+              className={styles.filterBar}
+              ref={filterRef}
+              data-visible="false"
+              role="group"
+              aria-label="Filter portfolio by category"
+            >
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={`${styles.filterBtn} ${activeCategory === category ? styles.active : ''}`}
+                  onClick={() => handleCategoryChange(category)}
+                  type="button"
+                  aria-pressed={activeCategory === category}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            {/* Item count */}
+            <p className={styles.itemCount} aria-live="polite">
+              {filteredItems.length} {filteredItems.length === 1 ? 'work' : 'works'}
+              {activeCategory !== 'All' ? ` in ${activeCategory}` : ' across all categories'}
+            </p>
+
+            {/* Portfolio grid */}
+            <div
+              className={styles.portfolioGrid}
+              ref={gridRef}
+              role="list"
+            >
+              {filteredItems.map((item, index) => (
+                <button
+                  key={item.id}
+                  className={styles.portfolioItem}
+                  data-visible={itemsVisible ? 'true' : 'false'}
+                  style={{ '--delay': `${Math.min(index * 0.06, 0.5)}s` }}
+                  onClick={() => openLightbox(index)}
+                  type="button"
+                  aria-label={`View ${item.title}`}
+                  role="listitem"
+                >
+                  <img
+                    src={item.image}
+                    alt={`${item.title} — Lensscape`}
+                    loading={index < 6 ? 'eager' : 'lazy'}
+                    decoding="async"
+                  />
+
+                  {/* Mobile permanent gradient */}
+                  <div className={styles.mobileGradient} aria-hidden="true" />
+
+                  {/* Hover overlay — desktop */}
+                  <div className={styles.itemOverlay} aria-hidden="true">
+                    <p className={styles.itemCategory}>{item.category}</p>
+                    <h3 className={styles.itemTitle}>{item.title}</h3>
+                    <p className={styles.itemDescription}>{item.description}</p>
+                    <span className={styles.itemCta}>View Image</span>
+                  </div>
+
+                  {/* Mobile caption — always visible */}
+                  <div className={styles.mobileCaption} aria-hidden="true">
+                    <p className={styles.mobileCaptionCategory}>{item.category}</p>
+                    <p className={styles.mobileCaptionTitle}>{item.title}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* No results */}
+            {filteredItems.length === 0 && (
+              <div className={styles.noResults} role="status">
+                <p>No works found in this category.</p>
+              </div>
+            )}
+
+          </div>
         </div>
-      </section>
+
+      </main>
 
       {/* Lightbox */}
       {lightboxIndex !== null && (

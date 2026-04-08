@@ -1,86 +1,295 @@
 // ─────────────────────────────────────────────────────────
-// Portfolio Page — Production · Filtered · Responsive
+// Portfolio Page — Production · Mobile-first · Lensscape
 // ─────────────────────────────────────────────────────────
 
-// ── Section shell ──────────────────────────────────────
-.section {
+// ── Keyframes ─────────────────────────────────────────────
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes itemReveal {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes heroBgZoom {
+  from { transform: scale(1.06); }
+  to   { transform: scale(1.00); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { transform: translateX(-50%) translateY(0);   opacity: 0.42; }
+  50%       { transform: translateX(-50%) translateY(7px); opacity: 0.82; }
+}
+
+// ── Page shell ────────────────────────────────────────────
+.page {
   background-color: $color-background;
   min-height: 100vh;
-  position: relative;
 }
 
-// ── Hero Banner ────────────────────────────────────────
-.heroBanner {
+// ─────────────────────────────────────────────────────────
+// HERO
+// ─────────────────────────────────────────────────────────
+
+.hero {
   position: relative;
-  height: 500px;
+  height: 100vh;
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
-  margin-bottom: $spacing-4xl;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 5rem;
 
   @include min-width(md) {
-    height: 600px;
-  }
-
-  &[data-visible='false'] {
-    .heroContent {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-  }
-
-  &[data-visible='true'] {
-    .heroContent {
-      animation: slideUpFade 0.8s ease-out forwards;
-    }
+    align-items: center;
+    padding-bottom: 0;
   }
 }
 
-.heroOverlay {
+// Background image
+.heroBg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba($color-primary, 0.85) 0%,
-    rgba($color-primary, 0.65) 50%,
-    rgba($color-secondary, 0.1) 100%
-  );
-  z-index: 1;
+  z-index: 0;
 }
 
-.heroContent {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: $color-primary-light;
-  max-width: 800px;
-  padding: $spacing-3xl $spacing-lg;
+.heroBgImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: heroBgZoom 8s ease-out both;
+  }
+}
+
+// Overlay layers — identical to Hero section
+.heroOverlayBase {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba($color-primary, 0.55);
 
   @include min-width(md) {
-    padding: $spacing-4xl;
+    background: rgba($color-primary, 0.38);
   }
+}
+
+.heroOverlayLeft {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba($color-primary, 0.75) 0%,
+    rgba($color-primary, 0.55) 50%,
+    rgba($color-primary, 0.28) 100%
+  );
+
+  @include min-width(md) {
+    background: linear-gradient(
+      100deg,
+      rgba($color-primary, 0.92) 0%,
+      rgba($color-primary, 0.70) 38%,
+      rgba($color-primary, 0.20) 62%,
+      rgba($color-primary, 0.00) 100%
+    );
+  }
+}
+
+.heroOverlayBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  z-index: 3;
+  background: linear-gradient(to top, $color-background, transparent);
+}
+
+// Hero content
+.heroContent {
+  position: relative;
+  z-index: 5;
+  padding: 0 $padding-responsive-sm;
+  max-width: 700px;
+
+  @include min-width(lg) {
+    padding: 0 $padding-responsive-lg;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(20px);
+
+    &[data-visible='true'] {
+      animation: revealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.heroEyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.1rem;
+}
+
+.heroEyebrowLine {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: $color-secondary;
+  flex-shrink: 0;
+
+  @include min-width(md) {
+    width: 36px;
+  }
+}
+
+.heroEyebrowText {
+  font-family: $font-primary;
+  font-size: 10px;
+  font-weight: $font-weight-normal;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  color: $color-secondary;
 }
 
 .heroTitle {
-  @include hero-heading;
-  margin: 0 0 $spacing-lg 0;
-  color: $color-primary-light;
-}
-
-.heroDescription {
-  font-size: $font-size-lg;
-  line-height: $line-height-relaxed;
-  color: rgba($color-primary-light, 0.9);
-  margin: 0;
+  font-family: $font-primary;
+  font-weight: $font-weight-light;
+  line-height: $line-height-tight;
+  color: $color-foreground-light;
+  margin: 0 0 0.85rem;
+  font-size: clamp(2.8rem, 9vw, $font-size-7xl);
 
   @include min-width(md) {
-    font-size: $font-size-xl;
+    font-size: clamp($font-size-6xl, 7vw, $font-size-8xl);
+    margin-bottom: 1rem;
   }
 }
 
-// ── Container ──────────────────────────────────────────
+.heroDescription {
+  font-family: $font-primary;
+  font-size: clamp($font-size-base, 3vw, $font-size-lg);
+  font-weight: $font-weight-light;
+  line-height: 1.75;
+  color: rgba($color-foreground-light, 0.70);
+  letter-spacing: $letter-spacing-wide;
+  margin: 0 0 2rem;
+  max-width: 520px;
+}
+
+// Stats row
+.heroStats {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+
+  @include min-width(md) {
+    gap: 1.8rem;
+    flex-wrap: nowrap;
+  }
+}
+
+.heroStat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.15rem;
+}
+
+.heroStatNumber {
+  font-family: $font-primary;
+  font-weight: $font-weight-light;
+  line-height: 1;
+  color: $color-foreground-light;
+  font-size: clamp(1.4rem, 5vw, $font-size-2xl);
+
+  em {
+    font-style: normal;
+    color: $color-secondary;
+    font-size: 0.75em;
+  }
+}
+
+.heroStatLabel {
+  font-family: $font-primary;
+  font-size: 9px;
+  font-weight: $font-weight-normal;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  color: rgba($color-foreground-light, 0.42);
+}
+
+.heroStatDivider {
+  width: 1px;
+  height: 28px;
+  background: rgba($color-foreground-light, 0.15);
+  flex-shrink: 0;
+  align-self: center;
+
+  // Hide on very small screens when stats wrap
+  @media (max-width: 360px) {
+    display: none;
+  }
+}
+
+// Scroll cue
+.scrollCue {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+
+  @include min-width(md) {
+    display: flex;
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation: scrollPulse 2.8s ease-in-out infinite;
+    }
+  }
+}
+
+.scrollLine {
+  display: block;
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, $color-secondary, transparent);
+}
+
+.scrollText {
+  font-family: $font-primary;
+  font-size: 9px;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  color: rgba($color-foreground-light, 0.42);
+}
+
+// ─────────────────────────────────────────────────────────
+// GRID SECTION
+// ─────────────────────────────────────────────────────────
+
+.gridSection {
+  padding: $spacing-3xl 0 $spacing-3xl;
+}
+
 .container {
   max-width: $max-width;
   margin: 0 auto;
@@ -91,137 +300,135 @@
   }
 }
 
-// ── Filter Bar ─────────────────────────────────────────
+// ── Filter bar ────────────────────────────────────────────
 .filterBar {
+  // Mobile: horizontal scroll (no wrap)
   display: flex;
-  gap: $gap-md;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: $spacing-4xl;
-  padding: $spacing-lg 0;
-
-  &[data-visible='false'] {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  &[data-visible='true'] {
-    animation: slideUpFade 0.6s ease-out 0.2s both;
-  }
+  flex-wrap: nowrap;
+  gap: $gap-sm;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.5rem;
+  margin-bottom: $spacing-2xl;
+  // Hide scrollbar visually but keep it functional
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 
   @include min-width(md) {
-    gap: $gap-lg;
-    margin-bottom: $spacing-5xl;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible;
+    gap: $gap-md;
+    margin-bottom: $spacing-3xl;
   }
 
-  @media (max-width: 480px) {
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: $spacing-md;
-    
-    &::-webkit-scrollbar {
-      height: 4px;
-    }
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(18px);
 
-    &::-webkit-scrollbar-track {
-      background: transparent;
+    &[data-visible='true'] {
+      animation: revealUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
     }
+  }
 
-    &::-webkit-scrollbar-thumb {
-      background: rgba($color-secondary, 0.3);
-      border-radius: 2px;
-
-      &:hover {
-        background: rgba($color-secondary, 0.5);
-      }
-    }
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
   }
 }
 
 .filterBtn {
-  padding: $spacing-sm $spacing-lg;
-  background-color: transparent;
-  border: 2px solid $color-secondary;
-  color: $color-foreground;
-  cursor: pointer;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-medium;
-  letter-spacing: $letter-spacing-wider;
-  font-family: $font-primary;
-  text-transform: uppercase;
-  @include transition-smooth(all, $transition-duration-normal);
-  border-radius: $radius-sm;
-  white-space: nowrap;
   flex-shrink: 0;
-
-  &:hover:not(.active) {
-    border-color: $color-accent-hover;
-    color: $color-accent-hover;
-  }
+  padding: 0.55rem 1.25rem;
+  background: transparent;
+  border: 1px solid rgba($color-secondary, 0.35);
+  color: $color-text-muted;
+  cursor: pointer;
+  font-family: $font-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-normal;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+              color 0.3s ease, box-shadow 0.3s ease;
+  min-height: 44px;
+  -webkit-tap-highlight-color: transparent;
 
   &.active {
     background-color: $color-secondary;
+    border-color: $color-secondary;
     color: $color-primary;
-    box-shadow: $shadow-lg-gold;
+    box-shadow: 0 4px 16px rgba($color-secondary, 0.3);
   }
 
-  &:focus-visible {
-    outline: 2px solid $color-secondary;
-    outline-offset: 2px;
-  }
-}
-
-// ── Portfolio Grid ─────────────────────────────────────
-.portfolioGrid {
-  @include grid-layout(1, $gap-2xl);
-  margin-bottom: $spacing-5xl;
-
-  @include min-width(mobile) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: $gap-2xl;
-  }
-
-  @include min-width(md) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @include min-width(lg) {
-    gap: $gap-3xl;
-  }
-
-}
-
-.portfolioItem {
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  aspect-ratio: 1;
-  @include transition-smooth(transform, $transition-duration-normal);
-
-  &[data-visible='false'] {
-    opacity: 0;
-    transform: scale(0.95) translateY(30px);
-  }
-
-  &[data-visible='true'] {
-    animation: scaleInFade 0.6s ease-out forwards;
-    animation-delay: var(--delay, 0s);
-  }
-
-  &:hover {
-    transform: scale(1.02);
-
-    .itemOverlay {
-      opacity: 1;
+  @media (hover: hover) and (pointer: fine) {
+    &:not(.active):hover {
+      border-color: $color-secondary;
+      color: $color-foreground;
     }
   }
 
   &:focus-visible {
-    outline: 3px solid $color-secondary;
-    outline-offset: 2px;
+    outline: 2px solid $color-secondary;
+    outline-offset: 3px;
+  }
+}
+
+// Item count
+.itemCount {
+  font-family: $font-primary;
+  font-size: $font-size-xs;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  color: rgba($color-foreground, 0.35);
+  margin: 0 0 $spacing-2xl;
+  text-align: center;
+}
+
+// ── Portfolio grid ────────────────────────────────────────
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $gap-md;
+
+  @include min-width(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include min-width(lg) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: $gap-lg;
+  }
+}
+
+// ── Portfolio item ────────────────────────────────────────
+.portfolioItem {
+  position: relative;
+  overflow: hidden;
+  background-color: $color-primary;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  aspect-ratio: 4 / 3;
+  -webkit-tap-highlight-color: transparent;
+
+  // Scroll-reveal driven by itemsVisible state
+  @media (prefers-reduced-motion: no-preference) {
+    opacity: 0;
+    transform: translateY(20px);
+
+    &[data-visible='true'] {
+      animation: itemReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: var(--delay, 0s);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
   }
 
   img {
@@ -230,163 +437,155 @@
     object-fit: cover;
     object-position: center;
     display: block;
+    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover img {
+      transform: scale(1.06);
+    }
+
+    &:hover .itemOverlay {
+      opacity: 1;
+    }
+
+    &:hover .itemCta {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    // Hide mobile caption on desktop hover
+    &:hover .mobileCaption {
+      opacity: 0;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-secondary;
+    outline-offset: 3px;
   }
 }
 
+// ── Hover overlay ─────────────────────────────────────────
 .itemOverlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    135deg,
-    rgba($color-primary, 0.85) 0%,
-    rgba($color-primary-light, 0.05) 100%
+    to bottom,
+    rgba($color-primary, 0.3) 0%,
+    rgba($color-primary, 0.82) 100%
   );
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: $spacing-lg;
   opacity: 0;
-  @include transition-smooth(opacity, $transition-duration-normal);
-
-  @include min-width(md) {
-    justify-content: flex-end;
-    padding: $spacing-xl;
-  }
-}
-
-.itemContent {
+  transition: opacity 0.4s ease;
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
-  width: 100%;
-}
+  justify-content: flex-end;
+  padding: 1.5rem;
+  pointer-events: none;
 
-.itemTitle {
-  color: $color-primary-light;
-  font-size: $font-size-lg;
-  font-weight: $font-weight-semibold;
-  margin: 0;
-  font-family: $font-primary;
-  line-height: $line-height-tight;
-
-  @include min-width(md) {
-    font-size: $font-size-xl;
+  @media (hover: none) {
+    display: none;
   }
 }
 
 .itemCategory {
-  color: $color-secondary;
-  font-size: $font-size-sm;
-  margin: 0;
   font-family: $font-primary;
+  font-size: 10px;
+  font-weight: $font-weight-normal;
   letter-spacing: $letter-spacing-wider;
   text-transform: uppercase;
-  font-weight: $font-weight-medium;
-}
-
-.itemIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: rgba($color-secondary, 0.2);
-  border: 2px solid $color-secondary;
-  border-radius: $radius-md;
   color: $color-secondary;
-  flex-shrink: 0;
-  margin-left: auto;
+  margin: 0 0 0.3rem;
+}
 
-  @include min-width(md) {
-    width: 56px;
-    height: 56px;
-  }
+.itemTitle {
+  font-family: $font-primary;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  color: $color-foreground-light;
+  margin: 0 0 0.4rem;
+}
 
-  svg {
-    width: 24px;
-    height: 24px;
-    stroke-width: 1.5px;
+.itemDescription {
+  font-family: $font-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-light;
+  line-height: $line-height-relaxed;
+  color: rgba($color-foreground-light, 0.7);
+  margin: 0 0 0.75rem;
+}
+
+.itemCta {
+  font-family: $font-primary;
+  font-size: 10px;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  color: $color-secondary;
+  transform: translateY(6px);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1) 0.05s,
+              opacity 0.3s ease 0.05s;
+  display: block;
+}
+
+// ── Mobile permanent gradient + caption ───────────────────
+.mobileGradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 45%, rgba($color-primary, 0.78) 100%);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    display: none;
   }
 }
 
-// ── No Results Message ─────────────────────────────────
+.mobileCaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.85rem 1rem 1rem;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    display: none;
+  }
+}
+
+.mobileCaptionCategory {
+  font-family: $font-primary;
+  font-size: 9px;
+  letter-spacing: $letter-spacing-wider;
+  text-transform: uppercase;
+  color: $color-secondary;
+  margin: 0 0 0.2rem;
+}
+
+.mobileCaptionTitle {
+  font-family: $font-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  color: $color-foreground-light;
+  margin: 0;
+}
+
+// ── No results ────────────────────────────────────────────
 .noResults {
   text-align: center;
-  padding: $spacing-4xl $spacing-lg;
+  padding: $spacing-3xl $spacing-lg;
   color: $color-text-muted;
-  font-size: $font-size-lg;
   font-family: $font-primary;
-  min-height: 300px;
+  font-size: $font-size-base;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  p {
-    margin: 0;
-  }
-}
-
-// ─────────────────────────────────────────────────────────
-// ANIMATIONS
-// ─────────────────────────────────────────────────────────
-
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleInFade {
-  from {
-    opacity: 0;
-    transform: scale(0.95) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-// ─────────────────────────────────────────────────────────
-// RESPONSIVE ADJUSTMENTS
-// ─────────────────────────────────────────────────────────
-
-@include min-width(sm) {
-  .heroBanner {
-    height: 550px;
-  }
-
-  .heroTitle {
-    font-size: 3rem;
-  }
-
-  .filterBtn {
-    padding: $spacing-md $spacing-xl;
-  }
-
-  .portfolioGrid {
-    gap: $gap-2xl;
-  }
-}
-
-@include min-width(lg) {
-  .heroBanner {
-    margin-bottom: $spacing-5xl;
-  }
-
-  .filterBar {
-    margin-bottom: $spacing-5xl;
-  }
-
-  .portfolioItem {
-    &:hover {
-      transform: scale(1.03);
-    }
-  }
+  p { margin: 0; }
 }

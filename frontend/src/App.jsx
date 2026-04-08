@@ -11,6 +11,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Portfolio } from './pages/Portfolio';
+import { ServiceDetail } from './pages/ServiceDetail';
 import styles from './styles/App.module.scss';
 
 function HomePage() {
@@ -34,6 +35,7 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/services/:slug" element={<ServiceDetail />} />
         <Route path="/portfolio" element={<Portfolio />} />
       </Routes>
       <Footer />

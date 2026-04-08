@@ -1,6 +1,65 @@
-import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Instagram, Facebook, Twitter, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  Mail, Phone, MapPin,
+  Instagram, Facebook, Twitter,
+  CheckCircle, AlertCircle,
+} from 'lucide-react';
 import styles from '../styles/Contact.module.scss';
+
+// ── Shared reveal hook ────────────────────────────────────
+function useRevealOnScroll(ref, { threshold = 0.15 } = {}) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      el.dataset.visible = 'true';
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          entry.target.dataset.visible = 'true';
+          observer.unobserve(entry.target);
+        }
+      },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+}
+
+// ── Contact info items ────────────────────────────────────
+const contactInfo = [
+  {
+    icon: Mail,
+    title: 'Email',
+    content: (
+      <a href="mailto:hello@lensscape.co.ke" className={styles.infoLink}>
+        hello@lensscape.co.ke
+      </a>
+    ),
+  },
+  {
+    icon: Phone,
+    title: 'Phone',
+    content: (
+      <a href="tel:+254700000000" className={styles.infoLink}>
+        +254 700 000 000
+      </a>
+    ),
+  },
+  {
+    icon: MapPin,
+    title: 'Location',
+    content: (
+      <p className={styles.infoText}>
+        Nairobi, Kenya<br />
+        Available for travel nationwide
+      </p>
+    ),
+  },
+];
 
 export function Contact() {
   const [formData, setFormData] = useState({
@@ -9,135 +68,135 @@ export function Contact() {
     projectType: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting]   = useState(false);
+  const [submitStatus, setSubmitStatus]   = useState(null); // 'success' | 'error'
+  const [errors, setErrors]               = useState({});
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
-  const [errors, setErrors] = useState({});
+  // ── Scroll reveal refs ────────────────────────────────
+  const headerRef = useRef(null);
+  const formRef   = useRef(null);
+  const infoRef   = useRef(null);
 
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  useRevealOnScroll(headerRef, { threshold: 0.2  });
+  useRevealOnScroll(formRef,   { threshold: 0.12 });
+  useRevealOnScroll(infoRef,   { threshold: 0.12 });
+
+  // ── Validation ────────────────────────────────────────
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.name.trim()) {
+    if (!formData.name.trim())
       newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email.trim()) {
+    if (!formData.email.trim())
       newErrors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
+    else if (!validateEmail(formData.email))
       newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.projectType) {
+    if (!formData.projectType)
       newErrors.projectType = 'Please select a service type';
-    }
-
-    if (!formData.message.trim()) {
+    if (!formData.message.trim())
       newErrors.message = 'Message is required';
-    } else if (formData.message.trim().length < 10) {
+    else if (formData.message.trim().length < 10)
       newErrors.message = 'Message must be at least 10 characters';
-    }
-
     return newErrors;
   };
 
+  // ── Submit ────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     const newErrors = validateForm();
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setSubmitStatus(null);
       return;
     }
-
     setErrors({});
     setIsSubmitting(true);
     setSubmitStatus(null);
-
     try {
-      // Simulating API call - replace with your actual backend endpoint
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Form submitted:', formData);
+      // Replace with your actual backend endpoint
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       setSubmitStatus('success');
       setFormData({ name: '', email: '', projectType: '', message: '' });
-
-      // Clear success message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus(null);
-      }, 5000);
-    } catch (error) {
-      console.error('Error submitting form:', error);
+      setTimeout(() => setSubmitStatus(null), 5000);
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // ── Field change ──────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    // Clear error for this field when user starts typing
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: '',
-      });
-    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   return (
-    <section id="contact" className={styles.section}>
+    <section
+      id="contact"
+      className={styles.section}
+      aria-labelledby="contact-heading"
+    >
       <div className={styles.container}>
-        {/* Header */}
-        <div className={styles.header}>
-          <span className={styles.label}>Contact</span>
-          <h2 className={styles.title}>
+
+        {/* ── Header ──────────────────────────────────── */}
+        <header
+          className={styles.header}
+          ref={headerRef}
+          data-visible="false"
+        >
+          <span className={styles.sectionLabel} aria-hidden="true">Contact</span>
+          <h2 id="contact-heading" className={styles.title}>
             Let's Create Together
           </h2>
           <p className={styles.description}>
-            Ready to capture your story? Get in touch to discuss your project and bring your vision to life
+            Ready to capture your story? Get in touch to discuss your project
+            and bring your vision to life.
           </p>
-        </div>
+        </header>
 
         <div className={styles.grid}>
-          {/* Contact Form */}
-          <div className={styles.formContainer}>
-            <form onSubmit={handleSubmit} className={styles.formSection} noValidate>
-              {/* Success Message */}
+
+          {/* ── Form column ─────────────────────────── */}
+          <div
+            className={styles.formContainer}
+            ref={formRef}
+            data-visible="false"
+          >
+            <form
+              onSubmit={handleSubmit}
+              className={styles.formSection}
+              noValidate
+              aria-label="Contact form"
+            >
+              {/* Success */}
               {submitStatus === 'success' && (
-                <div className={styles.successMessage}>
-                  <CheckCircle className={styles.statusIcon} />
+                <div className={styles.successMessage} role="alert">
+                  <CheckCircle className={styles.statusIcon} aria-hidden="true" />
                   <div>
                     <h4>Message Sent Successfully</h4>
-                    <p>Thank you for reaching out! We'll get back to you within 24 hours.</p>
+                    <p>Thank you for reaching out. We'll be in touch within 24 hours.</p>
                   </div>
                 </div>
               )}
 
-              {/* Error Message */}
+              {/* Error */}
               {submitStatus === 'error' && (
-                <div className={styles.errorMessage}>
-                  <AlertCircle className={styles.statusIcon} />
+                <div className={styles.errorMessage} role="alert">
+                  <AlertCircle className={styles.statusIcon} aria-hidden="true" />
                   <div>
-                    <h4>Oops! Something went wrong</h4>
-                    <p>Please try again or contact us directly via email.</p>
+                    <h4>Something went wrong</h4>
+                    <p>Please try again or reach us directly at hello@lensscape.co.ke</p>
                   </div>
                 </div>
               )}
 
-              {/* Name Field */}
+              {/* Name */}
               <div className={styles.formGroup}>
-                <label htmlFor="name" className={styles.label}>
-                  Name <span className={styles.required}>*</span>
+                <label htmlFor="name" className={styles.fieldLabel}>
+                  Name <span className={styles.required} aria-hidden="true">*</span>
                 </label>
                 <input
                   id="name"
@@ -149,16 +208,21 @@ export function Contact() {
                   placeholder="Your full name"
                   className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
                   disabled={isSubmitting}
+                  aria-describedby={errors.name ? 'name-error' : undefined}
+                  aria-invalid={!!errors.name}
+                  autoComplete="name"
                 />
                 {errors.name && (
-                  <span className={styles.errorText}>{errors.name}</span>
+                  <span id="name-error" className={styles.errorText} role="alert">
+                    {errors.name}
+                  </span>
                 )}
               </div>
 
-              {/* Email Field */}
+              {/* Email */}
               <div className={styles.formGroup}>
-                <label htmlFor="email" className={styles.label}>
-                  Email <span className={styles.required}>*</span>
+                <label htmlFor="email" className={styles.fieldLabel}>
+                  Email <span className={styles.required} aria-hidden="true">*</span>
                 </label>
                 <input
                   id="email"
@@ -170,16 +234,21 @@ export function Contact() {
                   placeholder="your@email.com"
                   className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                   disabled={isSubmitting}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  aria-invalid={!!errors.email}
+                  autoComplete="email"
                 />
                 {errors.email && (
-                  <span className={styles.errorText}>{errors.email}</span>
+                  <span id="email-error" className={styles.errorText} role="alert">
+                    {errors.email}
+                  </span>
                 )}
               </div>
 
-              {/* Project Type Field */}
+              {/* Project type */}
               <div className={styles.formGroup}>
-                <label htmlFor="projectType" className={styles.label}>
-                  Service Type <span className={styles.required}>*</span>
+                <label htmlFor="projectType" className={styles.fieldLabel}>
+                  Service Type <span className={styles.required} aria-hidden="true">*</span>
                 </label>
                 <select
                   id="projectType"
@@ -189,6 +258,8 @@ export function Contact() {
                   required
                   className={`${styles.select} ${errors.projectType ? styles.inputError : ''}`}
                   disabled={isSubmitting}
+                  aria-describedby={errors.projectType ? 'projectType-error' : undefined}
+                  aria-invalid={!!errors.projectType}
                 >
                   <option value="">Select a service</option>
                   <option value="wedding">Wedding Photography</option>
@@ -196,17 +267,20 @@ export function Contact() {
                   <option value="commercial">Commercial Photography</option>
                   <option value="event">Event Photography</option>
                   <option value="fashion">Fashion Photography</option>
+                  <option value="lifestyle">Lifestyle Photography</option>
                   <option value="other">Other</option>
                 </select>
                 {errors.projectType && (
-                  <span className={styles.errorText}>{errors.projectType}</span>
+                  <span id="projectType-error" className={styles.errorText} role="alert">
+                    {errors.projectType}
+                  </span>
                 )}
               </div>
 
-              {/* Message Field */}
+              {/* Message */}
               <div className={styles.formGroup}>
-                <label htmlFor="message" className={styles.label}>
-                  Message <span className={styles.required}>*</span>
+                <label htmlFor="message" className={styles.fieldLabel}>
+                  Message <span className={styles.required} aria-hidden="true">*</span>
                 </label>
                 <textarea
                   id="message"
@@ -214,25 +288,30 @@ export function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  placeholder="Tell us about your project..."
+                  placeholder="Tell us about your project — the occasion, location, style, and any details that matter to you."
                   className={`${styles.textarea} ${errors.message ? styles.inputError : ''}`}
                   disabled={isSubmitting}
+                  aria-describedby={errors.message ? 'message-error' : undefined}
+                  aria-invalid={!!errors.message}
                 />
                 {errors.message && (
-                  <span className={styles.errorText}>{errors.message}</span>
+                  <span id="message-error" className={styles.errorText} role="alert">
+                    {errors.message}
+                  </span>
                 )}
               </div>
 
-              {/* Submit Button */}
+              {/* Submit */}
               <button
                 type="submit"
                 className={styles.submitButton}
                 disabled={isSubmitting}
+                aria-busy={isSubmitting}
               >
                 {isSubmitting ? (
                   <>
-                    <span className={styles.spinner}></span>
-                    Sending...
+                    <span className={styles.spinner} aria-hidden="true" />
+                    Sending…
                   </>
                 ) : (
                   'Send Message'
@@ -241,69 +320,50 @@ export function Contact() {
             </form>
           </div>
 
-          {/* Contact Information */}
-          <div className={styles.infoSection}>
-            {/* Email */}
-            <div className={styles.infoCard}>
-              <div className={styles.iconWrapper}>
-                <Mail className={styles.infoIcon} />
+          {/* ── Info column ──────────────────────────── */}
+          <div
+            className={styles.infoSection}
+            ref={infoRef}
+            data-visible="false"
+          >
+            {contactInfo.map(({ icon: Icon, title, content }) => (
+              <div key={title} className={styles.infoCard}>
+                <div className={styles.iconWrapper} aria-hidden="true">
+                  <Icon className={styles.infoIcon} aria-hidden="true" focusable="false" />
+                </div>
+                <div className={styles.infoContent}>
+                  <h3 className={styles.infoTitle}>{title}</h3>
+                  {content}
+                </div>
               </div>
-              <div className={styles.infoContent}>
-                <h3 className={styles.infoTitle}>Email</h3>
-                <a href="mailto:hello@lensscape.com" className={styles.infoLink}>
-                  hello@lensscape.com
-                </a>
-              </div>
-            </div>
+            ))}
 
-            {/* Phone */}
-            <div className={styles.infoCard}>
-              <div className={styles.iconWrapper}>
-                <Phone className={styles.infoIcon} />
-              </div>
-              <div className={styles.infoContent}>
-                <h3 className={styles.infoTitle}>Phone</h3>
-                <a href="tel:+12125551234" className={styles.infoLink}>
-                  +1 (212) 555-1234
-                </a>
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className={styles.infoCard}>
-              <div className={styles.iconWrapper}>
-                <MapPin className={styles.infoIcon} />
-              </div>
-              <div className={styles.infoContent}>
-                <h3 className={styles.infoTitle}>Location</h3>
-                <p className={styles.infoText}>
-                  New York, NY<br />
-                  United States
-                </p>
-              </div>
-            </div>
-
-            {/* Social Links */}
+            {/* Social */}
             <div className={styles.infoCard}>
               <div className={styles.infoContent}>
                 <h3 className={styles.infoTitle}>Follow Us</h3>
                 <div className={styles.socialLinks}>
-                  <a href="#" className={styles.socialLink} aria-label="Instagram" title="Instagram">
-                    <Instagram />
-                  </a>
-                  <a href="#" className={styles.socialLink} aria-label="Facebook" title="Facebook">
-                    <Facebook />
-                  </a>
-                  <a href="#" className={styles.socialLink} aria-label="Twitter" title="Twitter">
-                    <Twitter />
-                  </a>
+                  {[
+                    { Icon: Instagram, label: 'Instagram' },
+                    { Icon: Facebook, label:  'Facebook'  },
+                    { Icon: Twitter,  label:  'Twitter'   },
+                  ].map(({ Icon, label }) => (
+                    <a
+                      key={label}
+                      href="#"
+                      className={styles.socialLink}
+                      aria-label={`Lensscape on ${label}`}
+                    >
+                      <Icon aria-hidden="true" focusable="false" />
+                    </a>
+                  ))}
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
   );
 }
-

@@ -162,6 +162,7 @@ export function Work() {
                     className={styles.portfolioLink}
                     type="button"
                     aria-label={`View project — ${item.title}`}
+                    onClick={() => navigate('/portfolio')}
                   >
                     <span>View Project</span>
                     <svg

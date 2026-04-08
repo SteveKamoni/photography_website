@@ -1,59 +1,31 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart, UserCircle, Building2, Calendar, Camera, Sparkles } from 'lucide-react';
+import { services } from '../data/servicesData';
 import styles from '../styles/Services.module.scss';
 
-const services = [
-  {
-    icon: Heart,
-    title: 'Wedding Photography',
-    description:
-      'Capturing your special day with elegance and emotion. From intimate ceremonies to grand celebrations, we document every precious moment.',
-    image:
-      'https://images.unsplash.com/photo-1758905728020-a888617aecd0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwd2VkZGluZyUyMHBob3RvZ3JhcGh5fGVufDF8fHx8MTc2ODE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    icon: UserCircle,
-    title: 'Portrait Photography',
-    description:
-      'Professional portraits that capture your essence. Perfect for executives, artists, and individuals seeking timeless, defining imagery.',
-    image:
-      'https://images.unsplash.com/photo-1532272278764-53cd1fe53f72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHBob3RvZ3JhcGh5fGVufDF8fHx8MTc2ODIwNzA1N3ww&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    icon: Building2,
-    title: 'Commercial Photography',
-    description:
-      'Elevate your brand with striking commercial imagery — product photography, corporate events, and architectural shoots tailored to your market.',
-    image:
-      'https://images.unsplash.com/photo-1603425013520-e0b30e6e37dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tZXJjaWFsJTIwcGhvdG9ncmFwaHklMjBzdHVkaW98ZW58MXx8fHwxNzY4MTcxODYyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    icon: Calendar,
-    title: 'Event Photography',
-    description:
-      'Comprehensive event coverage from corporate galas to private celebrations — capturing the energy, atmosphere, and moments that matter.',
-    image:
-      'https://images.unsplash.com/photo-1658063715878-bff71ed96a81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldmVudCUyMHBob3RvZ3JhcGh5JTIwY2VsZWJyYXRpb258ZW58MXx8fHwxNzY4MjA3MTEzfDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    icon: Camera,
-    title: 'Fashion Photography',
-    description:
-      'Editorial and commercial fashion photography with a luxury aesthetic. Bringing style, narrative, and sophistication to every frame.',
-    image:
-      'https://images.unsplash.com/photo-1717766293792-e78ea97e9d68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwcGhvdG9ncmFwaHklMjBzdHVkaW98ZW58MXx8fHwxNzY4MTI2MzY0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-  {
-    icon: Sparkles,
-    title: 'Lifestyle Photography',
-    description:
-      'Authentic lifestyle imagery that tells your story. From family sessions to personal branding — genuine moments, beautifully preserved.',
-    image:
-      'https://images.unsplash.com/photo-1724866525512-5658ee2e2d3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaWZlc3R5bGUlMjBwaG90b2dyYXBoeSUyMGhvbWV8ZW58MXx8fHwxNzY4MjA3MTE1fDA&ixlib=rb-4.1.0&q=80&w=1080',
-  },
-];
+// Map service slugs to icons
+const serviceIcons = {
+  'wedding-photography': Heart,
+  'portrait-photography': UserCircle,
+  'commercial-photography': Building2,
+  'event-photography': Calendar,
+  'fashion-photography': Camera,
+  'lifestyle-photography': Sparkles,
+};
+
+// Card images (separate from detailed data)
+const serviceImages = {
+  'wedding-photography': 'https://images.unsplash.com/photo-1758905728020-a888617aecd0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwd2VkZGluZyUyMHBob3RvZ3JhcGh5fGVufDF8fHx8MTc2ODE5NzIzOHww&ixlib=rb-4.1.0&q=80&w=1080',
+  'portrait-photography': 'https://images.unsplash.com/photo-1532272278764-53cd1fe53f72?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdCUyMHBob3RvZ3JhcGh5fGVufDF8fHx8MTc2ODIwNzA1N3ww&ixlib=rb-4.1.0&q=80&w=1080',
+  'commercial-photography': 'https://images.unsplash.com/photo-1603425013520-e0b30e6e37dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21tZXJjaWFsJTIwcGhvdG9ncmFwaHklMjBzdHVkaW98ZW58MXx8fHwxNzY4MTcxODYyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+  'event-photography': 'https://images.unsplash.com/photo-1658063715878-bff71ed96a81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxldmVudCUyMHBob3RvZ3JhcGh5JTIwY2VsZWJyYXRpb258ZW58MXx8fHwxNzY4MjA3MTEzfDA&ixlib=rb-4.1.0&q=80&w=1080',
+  'fashion-photography': 'https://images.unsplash.com/photo-1717766293792-e78ea97e9d68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmYXNoaW9uJTIwcGhvdG9ncmFwaHklMjBzdHVkaW98ZW58MXx8fHwxNzY4MTI2MzY0fDA&ixlib=rb-4.1.0&q=80&w=1080',
+  'lifestyle-photography': 'https://images.unsplash.com/photo-1724866525512-5658ee2e2d3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsaWZlc3R5bGUlMjBwaG90b2dyYXBoeSUyMGhvbWV8ZW58MXx8fHwxNzY4MjA3MTE1fDA&ixlib=rb-4.1.0&q=80&w=1080',
+};
 
 export function Services() {
+  const navigate = useNavigate();
   const headerRef = useRef(null);
   const gridRef   = useRef(null);
 
@@ -127,10 +99,10 @@ export function Services() {
         {/* ── Services grid ──────────────────────────── */}
         <div className={styles.servicesGrid} ref={gridRef}>
           {services.map((service, index) => {
-            const Icon = service.icon;
+            const Icon = serviceIcons[service.slug];
             return (
               <article
-                key={index}
+                key={service.slug}
                 className={styles.serviceCard}
                 data-card
                 data-visible="false"
@@ -139,17 +111,19 @@ export function Services() {
                 {/* Image */}
                 <div className={styles.serviceImage}>
                   <img
-                    src={service.image}
+                    src={serviceImages[service.slug]}
                     alt={`${service.title} by Lensscape`}
                     loading="lazy"
                     decoding="async"
                   />
                   <div className={styles.imageOverlay} aria-hidden="true" />
-                  <Icon
-                    className={styles.serviceIcon}
-                    aria-hidden="true"
-                    focusable="false"
-                  />
+                  {Icon && (
+                    <Icon
+                      className={styles.serviceIcon}
+                      aria-hidden="true"
+                      focusable="false"
+                    />
+                  )}
                 </div>
 
                 {/* Content */}
@@ -160,6 +134,7 @@ export function Services() {
                     className={styles.serviceLink}
                     type="button"
                     aria-label={`Learn more about ${service.title}`}
+                    onClick={() => navigate(`/services/${service.slug}`)}
                   >
                     <span>Learn More</span>
                     <svg
