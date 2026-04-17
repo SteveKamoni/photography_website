@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -10,9 +10,12 @@ import { Testimonials } from './components/Testimonials';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
-import { Portfolio } from './pages/Portfolio';
-import { ServiceDetail } from './pages/ServiceDetail';
+import { RouteLoadingFallback } from './components/RouteLoadingFallback';
 import styles from './styles/App.module.scss';
+
+// Lazy-loaded route components
+const Portfolio = React.lazy(() => import('./pages/Portfolio').then(m => ({ default: m.Portfolio })));
+const ServiceDetail = React.lazy(() => import('./pages/ServiceDetail').then(m => ({ default: m.ServiceDetail })));
 
 function HomePage() {
   return (
@@ -35,8 +38,22 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/services/:slug" element={<ServiceDetail />} />
-        <Route path="/portfolio" element={<Portfolio />} />
+        <Route
+          path="/services/:slug"
+          element={
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <ServiceDetail />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <Suspense fallback={<RouteLoadingFallback />}>
+              <Portfolio />
+            </Suspense>
+          }
+        />
       </Routes>
       <Footer />
     </>
