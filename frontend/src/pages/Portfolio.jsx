@@ -397,7 +397,10 @@ export function Portfolio() {
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <Lightbox
-          images={portfolioItems}
+          images={portfolioItems.map((item) => ({
+            src: item.image,
+            alt: item.title,
+          }))}
           activeIndex={lightboxIndex}
           onClose={closeLightbox}
           onPrev={prevImage}
