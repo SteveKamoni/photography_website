@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, ArrowRight } from 'lucide-react';
 import { getServiceBySlug } from '../data/servicesData';
-import styles from '../styles/pages/Servicedetail.module.scss';
+import styles from '../styles/pages/ServiceDetail.module.scss';
 
 // ── Shared reveal hook ────────────────────────────────────
 function useRevealOnScroll(ref, { threshold = 0.15 } = {}) {
